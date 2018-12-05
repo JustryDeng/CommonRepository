@@ -139,7 +139,7 @@ public class EasyPoiApplicationTests {
             tempMap.put("age", new Random().nextInt(90) + 11);
             tempMap.put("hobby", "活的，女的！！！");
             tempMap.put("handsomeValue", "100分(满分100分)");
-            tempMap.put("motto", "只所以只帅到了全亚洲，是因为其他地方审美不同！");
+            tempMap.put("motto", "之所以只帅到了全亚洲，是因为其他地方审美不同！");
             list.add(tempMap);
         }
         map.put("dataList", list);
