@@ -9,7 +9,7 @@ import java.util.Date;
  * @author JustryDeng
  * @date 2018/12/5 9:35
  */
-public class StudentVO {
+public class StudentVO extends SchoolVO {
 
     /**
      * name指定导出excel时生成的列名
@@ -41,7 +41,7 @@ public class StudentVO {
     @Excel(name = "入校时间",format = "yyyy-MM-dd", orderNum = "5", width = 20)
     private Date entranceTime;
 
-    @Excel(name = "班级",orderNum = "6", width = 15)
+    @Excel(name = "班级",orderNum = "7", width = 15)
     private String className;
 
     /**

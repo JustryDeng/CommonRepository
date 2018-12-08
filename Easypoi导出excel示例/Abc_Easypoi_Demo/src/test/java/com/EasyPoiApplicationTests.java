@@ -82,6 +82,8 @@ public class EasyPoiApplicationTests {
     /**
      * 对象---直接导出(无需模板)
      *
+     * 注:如果模型 的父类的属性也有@Excel注解，那么导出excel时，会连该模型的父类的属性也一会儿导出
+     *
      * @author JustryDeng
      * @date 2018/12/5 11:44
      */
@@ -97,6 +99,8 @@ public class EasyPoiApplicationTests {
                     random.nextInt(100),
                     new Date(),
                     "className" + i);
+            student.setSchoolName("学校名称" + i);
+            student.setSchoolAddress("学校地址" +i);
             list.add(student);
         }
         ExportParams exportParams = new ExportParams();
