@@ -1,0 +1,12 @@
+2018 十二月 13 09:35:03.575 [restartedMain] INFO  com.DemoApplication:48- Starting DemoApplication on JustryDeng with PID 18508 (E:\Java\demo\Abc-SpringBoot-Demo\target\classes started by JustryDeng in E:\Java\demo\Abc_ZooKeeper_Demo)
+2018 十二月 13 09:35:03.591 [restartedMain] DEBUG com.DemoApplication:51- Running with Spring Boot v1.5.8.RELEASE, Spring v4.3.12.RELEASE
+2018 十二月 13 09:35:03.591 [restartedMain] INFO  com.DemoApplication:593- No active profile set, falling back to default profiles: default
+2018 十二月 13 09:35:06.340 [restartedMain] INFO  com.DemoApplication:57- Started DemoApplication in 3.187 seconds (JVM running for 4.672)
+2018 十二月 13 09:36:09.006 [restartedMain] INFO  com.DemoApplication:48- Starting DemoApplication on JustryDeng with PID 6728 (E:\Java\demo\Abc-SpringBoot-Demo\target\classes started by JustryDeng in E:\Java\demo\Abc_ZooKeeper_Demo)
+2018 十二月 13 09:36:09.008 [restartedMain] DEBUG com.DemoApplication:51- Running with Spring Boot v1.5.8.RELEASE, Spring v4.3.12.RELEASE
+2018 十二月 13 09:36:09.009 [restartedMain] INFO  com.DemoApplication:593- No active profile set, falling back to default profiles: default
+2018 十二月 13 09:36:11.144 [restartedMain] INFO  com.DemoApplication:57- Started DemoApplication in 2.475 seconds (JVM running for 3.292)
+2018 十二月 13 09:37:09.187 [restartedMain] INFO  com.DemoApplication:48- Starting DemoApplication on JustryDeng with PID 20860 (E:\Java\demo\Abc-SpringBoot-Demo\target\classes started by JustryDeng in E:\Java\demo\Abc_ZooKeeper_Demo)
+2018 十二月 13 09:37:09.189 [restartedMain] DEBUG com.DemoApplication:51- Running with Spring Boot v1.5.8.RELEASE, Spring v4.3.12.RELEASE
+2018 十二月 13 09:37:09.190 [restartedMain] INFO  com.DemoApplication:593- No active profile set, falling back to default profiles: default
+2018 十二月 13 09:37:11.401 [restartedMain] INFO  com.DemoApplication:57- Started DemoApplication in 2.576 seconds (JVM running for 3.358)
