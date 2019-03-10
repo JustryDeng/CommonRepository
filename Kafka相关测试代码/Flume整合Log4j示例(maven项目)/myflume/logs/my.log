@@ -1,0 +1,74 @@
+2017-06-22 11:45:27,913 INFO [cn.mldn.myflume.TestFlumeDemo] - [***** {www.mldn.cn} *****]
+2017-06-22 11:45:27,914 INFO [cn.mldn.myflume.TestFlumeDemo] - [***** {www.mldn.cn} *****]
+2017-06-22 11:45:27,914 INFO [cn.mldn.myflume.TestFlumeDemo] - [***** {www.mldn.cn} *****]
+2017-06-22 11:45:27,914 INFO [cn.mldn.myflume.TestFlumeDemo] - [***** {www.mldn.cn} *****]
+2017-06-22 11:45:27,914 INFO [cn.mldn.myflume.TestFlumeDemo] - [***** {www.mldn.cn} *****]
+2017-06-22 11:45:27,914 INFO [cn.mldn.myflume.TestFlumeDemo] - [***** {www.mldn.cn} *****]
+2017-06-22 11:45:27,914 INFO [cn.mldn.myflume.TestFlumeDemo] - [***** {www.mldn.cn} *****]
+2017-06-22 11:45:27,914 INFO [cn.mldn.myflume.TestFlumeDemo] - [***** {www.mldn.cn} *****]
+2017-06-22 11:45:27,915 INFO [cn.mldn.myflume.TestFlumeDemo] - [***** {www.mldn.cn} *****]
+2017-06-22 11:45:27,915 INFO [cn.mldn.myflume.TestFlumeDemo] - [***** {www.mldn.cn} *****]
+2017-06-22 11:48:21,378 INFO [cn.mldn.myflume.TestFlumeDemo] - [***** {www.mldn.cn} *****]
+2017-06-22 11:48:21,379 INFO [cn.mldn.myflume.TestFlumeDemo] - [***** {www.mldn.cn} *****]
+2017-06-22 11:48:21,379 INFO [cn.mldn.myflume.TestFlumeDemo] - [***** {www.mldn.cn} *****]
+2017-06-22 11:48:21,379 INFO [cn.mldn.myflume.TestFlumeDemo] - [***** {www.mldn.cn} *****]
+2017-06-22 11:48:21,379 INFO [cn.mldn.myflume.TestFlumeDemo] - [***** {www.mldn.cn} *****]
+2017-06-22 11:48:21,379 INFO [cn.mldn.myflume.TestFlumeDemo] - [***** {www.mldn.cn} *****]
+2017-06-22 11:48:21,379 INFO [cn.mldn.myflume.TestFlumeDemo] - [***** {www.mldn.cn} *****]
+2017-06-22 11:48:21,379 INFO [cn.mldn.myflume.TestFlumeDemo] - [***** {www.mldn.cn} *****]
+2017-06-22 11:48:21,379 INFO [cn.mldn.myflume.TestFlumeDemo] - [***** {www.mldn.cn} *****]
+2017-06-22 11:48:21,379 INFO [cn.mldn.myflume.TestFlumeDemo] - [***** {www.mldn.cn} *****]
+2017-06-22 11:49:08,754 INFO [cn.mldn.myflume.TestFlumeDemo] - [***** {www.mldn.cn} *****]
+2017-06-22 11:49:08,754 INFO [cn.mldn.myflume.TestFlumeDemo] - [***** {www.mldn.cn} *****]
+2017-06-22 11:49:08,754 INFO [cn.mldn.myflume.TestFlumeDemo] - [***** {www.mldn.cn} *****]
+2017-06-22 11:49:08,754 INFO [cn.mldn.myflume.TestFlumeDemo] - [***** {www.mldn.cn} *****]
+2017-06-22 11:49:08,755 INFO [cn.mldn.myflume.TestFlumeDemo] - [***** {www.mldn.cn} *****]
+2017-06-22 11:49:08,755 INFO [cn.mldn.myflume.TestFlumeDemo] - [***** {www.mldn.cn} *****]
+2017-06-22 11:49:08,755 INFO [cn.mldn.myflume.TestFlumeDemo] - [***** {www.mldn.cn} *****]
+2017-06-22 11:49:08,755 INFO [cn.mldn.myflume.TestFlumeDemo] - [***** {www.mldn.cn} *****]
+2017-06-22 11:49:08,755 INFO [cn.mldn.myflume.TestFlumeDemo] - [***** {www.mldn.cn} *****]
+2017-06-22 11:49:08,755 INFO [cn.mldn.myflume.TestFlumeDemo] - [***** {www.mldn.cn} *****]
+2017-06-22 11:52:03,951 WARN [org.apache.flume.api.NettyAvroRpcClient] - Using default maxIOWorkers
+2017-06-22 11:52:04,362 INFO [cn.mldn.myflume.TestFlumeDemo] - [***** {www.mldn.cn} *****]
+2017-06-22 11:52:04,502 INFO [cn.mldn.myflume.TestFlumeDemo] - [***** {www.mldn.cn} *****]
+2017-06-22 11:52:04,506 INFO [cn.mldn.myflume.TestFlumeDemo] - [***** {www.mldn.cn} *****]
+2017-06-22 11:52:04,510 INFO [cn.mldn.myflume.TestFlumeDemo] - [***** {www.mldn.cn} *****]
+2017-06-22 11:52:04,513 INFO [cn.mldn.myflume.TestFlumeDemo] - [***** {www.mldn.cn} *****]
+2017-06-22 11:52:04,516 INFO [cn.mldn.myflume.TestFlumeDemo] - [***** {www.mldn.cn} *****]
+2017-06-22 11:52:04,520 INFO [cn.mldn.myflume.TestFlumeDemo] - [***** {www.mldn.cn} *****]
+2017-06-22 11:52:04,524 INFO [cn.mldn.myflume.TestFlumeDemo] - [***** {www.mldn.cn} *****]
+2017-06-22 11:52:04,527 INFO [cn.mldn.myflume.TestFlumeDemo] - [***** {www.mldn.cn} *****]
+2017-06-22 11:52:04,530 INFO [cn.mldn.myflume.TestFlumeDemo] - [***** {www.mldn.cn} *****]
+2017-06-22 11:52:36,425 WARN [org.apache.flume.api.NettyAvroRpcClient] - Using default maxIOWorkers
+2017-06-22 11:52:36,825 INFO [cn.mldn.myflume.TestFlumeDemo] - mldn.cn
+2017-06-22 11:52:36,887 INFO [cn.mldn.myflume.TestFlumeDemo] - mldn.cn
+2017-06-22 11:52:36,890 INFO [cn.mldn.myflume.TestFlumeDemo] - mldn.cn
+2017-06-22 11:52:36,894 INFO [cn.mldn.myflume.TestFlumeDemo] - mldn.cn
+2017-06-22 11:52:36,896 INFO [cn.mldn.myflume.TestFlumeDemo] - mldn.cn
+2017-06-22 11:52:36,900 INFO [cn.mldn.myflume.TestFlumeDemo] - mldn.cn
+2017-06-22 11:52:36,917 INFO [cn.mldn.myflume.TestFlumeDemo] - mldn.cn
+2017-06-22 11:52:36,919 INFO [cn.mldn.myflume.TestFlumeDemo] - mldn.cn
+2017-06-22 11:52:36,921 INFO [cn.mldn.myflume.TestFlumeDemo] - mldn.cn
+2017-06-22 11:52:36,925 INFO [cn.mldn.myflume.TestFlumeDemo] - mldn.cn
+2017-06-22 12:10:24,609 WARN [org.apache.flume.api.NettyAvroRpcClient] - Using default maxIOWorkers
+2017-06-22 12:10:25,005 INFO [cn.mldn.myflume.TestFlumeDemo] - mldn.cn
+2017-06-22 12:10:26,280 INFO [cn.mldn.myflume.TestFlumeDemo] - mldn.cn
+2017-06-22 12:10:26,308 INFO [cn.mldn.myflume.TestFlumeDemo] - mldn.cn
+2017-06-22 12:10:26,345 INFO [cn.mldn.myflume.TestFlumeDemo] - mldn.cn
+2017-06-22 12:10:26,359 INFO [cn.mldn.myflume.TestFlumeDemo] - mldn.cn
+2017-06-22 12:10:26,372 INFO [cn.mldn.myflume.TestFlumeDemo] - mldn.cn
+2017-06-22 12:10:26,386 INFO [cn.mldn.myflume.TestFlumeDemo] - mldn.cn
+2017-06-22 12:10:26,397 INFO [cn.mldn.myflume.TestFlumeDemo] - mldn.cn
+2017-06-22 12:10:26,409 INFO [cn.mldn.myflume.TestFlumeDemo] - mldn.cn
+2017-06-22 12:10:26,422 INFO [cn.mldn.myflume.TestFlumeDemo] - mldn.cn
+2017-06-22 12:11:24,550 WARN [org.apache.flume.api.NettyAvroRpcClient] - Using default maxIOWorkers
+2017-06-22 12:11:24,965 INFO [cn.mldn.myflume.TestFlumeDemo] - mldn.cn
+2017-06-22 12:11:25,053 INFO [cn.mldn.myflume.TestFlumeDemo] - mldn.cn
+2017-06-22 12:11:25,084 INFO [cn.mldn.myflume.TestFlumeDemo] - mldn.cn
+2017-06-22 12:11:25,096 INFO [cn.mldn.myflume.TestFlumeDemo] - mldn.cn
+2017-06-22 12:11:25,106 INFO [cn.mldn.myflume.TestFlumeDemo] - mldn.cn
+2017-06-22 12:11:25,116 INFO [cn.mldn.myflume.TestFlumeDemo] - mldn.cn
+2017-06-22 12:11:25,134 INFO [cn.mldn.myflume.TestFlumeDemo] - mldn.cn
+2017-06-22 12:11:25,144 INFO [cn.mldn.myflume.TestFlumeDemo] - mldn.cn
+2017-06-22 12:11:25,153 INFO [cn.mldn.myflume.TestFlumeDemo] - mldn.cn
+2017-06-22 12:11:25,160 INFO [cn.mldn.myflume.TestFlumeDemo] - mldn.cn

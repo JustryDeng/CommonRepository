@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration>
+
+    <appender name="consoleAppender"
+              class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{yyy MMM dd HH:mm:ss.SSS} [%thread] %-5level %logger{36}:%L- %msg%n
+            </pattern>
+        </encoder>
+    </appender>
+
+    <!--
+        name:自取即可,
+        class:加载指定类(ch.qos.logback.core.rolling.RollingFileAppender类会将日志输出到>>>指定的文件中),
+        patter:指定输出的日志格式 file:指定存放日志的文件(如果无,则自动创建) rollingPolicy:滚动策略>>>每天结束时，都会将该天的日志存为指定的格式的文件
+        FileNamePattern：文件的全路径名模板 (注:如果最后结尾是gz或者zip等的话,那么会自动打成相应压缩包)
+    -->
+    <appender name="fileAppender"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- 把日志文件输出到:项目启动的目录下的log文件夹(无则自动创建)下 -->
+        <file>log/logFile.log</file>
+        <!-- 把日志文件输出到:name为logFilePositionDir的property标签指定的位置下 -->
+        <!-- <file>${logFilePositionDir}/logFile.log</file> -->
+        <!-- 把日志文件输出到:当前磁盘下的log文件夹(无则自动创建)下 -->
+        <!-- <file>/log/logFile.log</file> -->
+        <rollingPolicy
+                class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- TimeBasedRollingPolicy策略会将过时的日志，另存到指定的文件中(无该文件则创建) -->
+            <!-- 把因为 过时 或 过大  而拆分后的文件也保存到目启动的目录下的log文件夹下  -->
+            <fileNamePattern>log/logFile.%d{yyyy-MM-dd}.%i.log
+            </fileNamePattern>
+            <!-- 设置过时时间(单位:<fileNamePattern>标签中%d里最小的时间单位) -->
+            <!-- 系统会删除(分离出去了的)过时了的日志文件 -->
+            <!-- 本人这里:保存以最后一次日志为准,往前7天以内的日志文件 -->
+            <MaxHistory>
+                7
+            </MaxHistory>
+            <!-- 滚动策略可以嵌套；
+                     这里嵌套了一个SizeAndTimeBasedFNATP策略，
+                        主要目的是: 在每天都会拆分日志的前提下，
+                        当该天的日志大于规定大小时，
+                        也进行拆分并以【%i】进行区分，i从0开始
+            -->
+            <timeBasedFileNamingAndTriggeringPolicy
+                    class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>5MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyy MMM dd HH:mm:ss.SSS} [%thread] %-5level %logger{36}:%L- %msg%n
+            </pattern>
+        </encoder>
+    </appender>
+
+    <appender name="flumeTest" class="com.teambytes.logback.flume.FlumeLogstashV1Appender">
+        <flumeAgents>
+            10.8.109.36:44444
+        </flumeAgents>
+        <flumeProperties>
+            connect-timeout=4000;
+            request-timeout=8000
+        </flumeProperties>
+        <batchSize>100</batchSize>
+        <reportingWindow>1000</reportingWindow>
+        <additionalAvroHeaders>
+            myHeader = myValue
+        </additionalAvroHeaders>
+        <application>JustryDeng's Application</application>
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>%d{HH:mm:ss.SSS} %-5level %logger{36} - \(%file:%line\) - %message%n%ex</pattern>
+        </layout>
+    </appender>
+
+    <logger name="com" level="info">
+        <appender-ref ref="flumeTest"/>
+    </logger>
+
+    <root level="info">
+        <appender-ref ref="consoleAppender"/>
+    </root>
+</configuration>
