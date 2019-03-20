@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: com.netflix.hystrix:hystrix-metrics-event-stream:1.5.10">
+    <CLASSES>
+      <root url="jar://E:/Maven/apache-maven-3.3.9/com/netflix/hystrix/hystrix-metrics-event-stream/1.5.10/hystrix-metrics-event-stream-1.5.10.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://E:/Maven/apache-maven-3.3.9/com/netflix/hystrix/hystrix-metrics-event-stream/1.5.10/hystrix-metrics-event-stream-1.5.10-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://E:/Maven/apache-maven-3.3.9/com/netflix/hystrix/hystrix-metrics-event-stream/1.5.10/hystrix-metrics-event-stream-1.5.10-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
