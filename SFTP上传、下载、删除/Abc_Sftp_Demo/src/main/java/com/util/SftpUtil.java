@@ -306,7 +306,7 @@ public class SftpUtil {
             channelSftp.cd(path);
             return true;
         } catch (SftpException e) {
-            logger.debug(" channelSftp.cd() error!  message -> {}, id -> {}", e.getMessage(), e.id);
+            logger.debug(" channelSftp.cd() fail!  message -> {}, id -> {}", e.getMessage(), e.id);
             // 如果 path不存在，那么报错信息为【No such file】，错误id为【2】
             // 如果 path存在，但是不能cd进去，那么报错信息形如【Can't change directory: /files/sqljdbc4-3.0.jar】，错误id为【4】
             if (legalErrorId == e.id) {
