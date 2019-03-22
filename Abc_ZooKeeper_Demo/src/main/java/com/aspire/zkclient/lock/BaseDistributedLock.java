@@ -187,7 +187,7 @@ public class BaseDistributedLock {
                     };
 
                     try {
-                        // 如果节点不存在会出现异常
+                        // 如果节点不存在会出现异常(需要使用重写了ZkClient类的watchForData方法的客户端)
                         client.subscribeDataChanges(previousSequencePath, previousListener);
 
                         if (millisToWait != null) {// 如果设置了等待时间，那么最多只等这么长时间
