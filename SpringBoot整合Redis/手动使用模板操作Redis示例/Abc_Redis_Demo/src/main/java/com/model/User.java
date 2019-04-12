@@ -20,9 +20,6 @@ import java.io.Serializable;
 @AllArgsConstructor
 public class User implements Serializable {
 
-    public User() {
-    }
-
     /** 姓名 */
     private String name;
 
