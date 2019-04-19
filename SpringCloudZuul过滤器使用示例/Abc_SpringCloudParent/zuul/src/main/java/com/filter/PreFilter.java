@@ -19,9 +19,9 @@ import java.util.Random;
  * @author JustryDeng
  * @date 2019/3/1 1:36
  */
-@Component
 @Slf4j
 @PropertySource(value = {"classpath:/authe_info.properties"}, encoding="utf8")
+@Component
 public class PreFilter extends ZuulFilter {
 
     @Value("${need-filter-uri}")

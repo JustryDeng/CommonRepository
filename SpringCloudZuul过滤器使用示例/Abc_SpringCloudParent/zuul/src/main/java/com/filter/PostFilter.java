@@ -28,7 +28,7 @@ public class PostFilter extends ZuulFilter {
      */
     @Override
     public String filterType() {
-        // 设置为 前置过滤
+        // 设置为 后置过滤
         return "post";
     }
 

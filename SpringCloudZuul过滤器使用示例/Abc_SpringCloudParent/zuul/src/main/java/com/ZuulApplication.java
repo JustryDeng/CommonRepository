@@ -6,6 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.cloud.netflix.zuul.EnableZuulProxy;
+import org.springframework.cloud.netflix.zuul.filters.post.SendErrorFilter;
 
 /**
  * 项目启动类
@@ -13,10 +14,9 @@ import org.springframework.cloud.netflix.zuul.EnableZuulProxy;
  * @author JustryDeng
  * @date 2019/2/25 23:50
  */
-@SpringBootApplication
 @EnableEurekaClient
 @EnableZuulProxy
-@EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class})
+@SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
 public class ZuulApplication {
 
     public static void main(String[] args) {
