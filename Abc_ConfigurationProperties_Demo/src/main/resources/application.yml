@@ -1,0 +1,87 @@
+yaml:
+  #------------------------------------------------------------- 普通用法
+  # 普通属性
+  normalboolean: false
+  normalnumber: 123
+  normalstring: value1
+
+  #------------------------------------------------------------- 数组/集合
+  # 数组或集合(元素为简单的元素)
+  myListOrArray:
+    - a
+    - b
+    - c
+  ### 等价于
+  #myListOrArray: a, b, c
+
+
+  # 数组或集合(元素为对象)
+  myListOrArrayPlus:
+    - {age: 25,
+       gender: 男,
+       motto: 我是一只小小小小鸟~,
+       name: 邓沙利文
+    }
+    - {age: 25,
+       gender: 男,
+       motto: 这里的山路十八弯~,
+       name: 亨得帅
+    }
+  ### 等价于
+  #myListOrArrayPlus:
+  #  -   age: 25
+  #      gender: 男
+  #      motto: 我是一只小小小小鸟~
+  #      name: 邓沙利文
+  #  -   age: 25
+  #      gender: 男
+  #      motto: 这里的山路十八弯~
+  #      name: 亨得帅
+
+  #------------------------------------------------------------- Map
+  ### 简单map
+  mymap:
+    k1: v1
+    k2: v2
+    k3: v3
+  ### 等价于
+  #mymap[k1]: v1
+  #mymap[k2]: v2
+  #mymap[k3]: v3
+
+  ### 复杂map(值为一个对象)
+  # 提示: {xxx}可以写在一行，也可以换行， 如本人这里换行了
+  myMapPlus:
+    k1: {
+      age: 25,
+      gender: 男,
+      motto: 我是一只小小小小鸟~,
+      name: 邓沙利文
+    }
+    k2: {
+      age: 25,
+      gender: 男,
+      motto: 蚂蚁牙黑~,
+      name: 邓二洋
+    }
+  ### 等价于
+  #myMapPlus[k1]:
+  #  age: 25
+  #  gender: 男
+  #  motto: 我是一只小小小小鸟~
+  #  name: 邓沙利文
+  #myMapPlus[k2]:
+  #  age: 25
+  #  gender: 男
+  #  motto: 蚂蚁牙黑~
+  #  name: 邓二洋
+
+  #------------------------------------------------------------- 对象
+  # 提示: {xxx}可以写在一行，也可以换行， 如本人这里就直接写在一行了
+  myuser: {age: 25, gender: 男, motto: 我是一只小小小小鸟~, name: 邓沙利文}
+  ### 等价于
+  #myuser:
+  #  age: 25
+  #  gender: 男
+  #  motto: 我是一只小小小小鸟~
+  #  name: 邓沙利文
