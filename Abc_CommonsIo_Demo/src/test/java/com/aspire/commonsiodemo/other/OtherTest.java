@@ -33,7 +33,7 @@ public class OtherTest {
             // fileStore.getTotalSpace() 获取磁盘总大小
             System.err.println("磁盘【" + fileStore.name() + "】总大小 -> " + FileUtils.byteCountToDisplaySize(fileStore.getTotalSpace()));
             // fileStore.getUsableSpace() 获取磁盘可用大小
-            System.err.println("磁盘【" + fileStore.name() +  "】可用大小 -> " + FileUtils.byteCountToDisplaySize(fileStore.getUsableSpace()));
+            System.err.println("磁盘【" + fileStore.name() + "】可用大小 -> " + FileUtils.byteCountToDisplaySize(fileStore.getUsableSpace()));
         }
     }
 
