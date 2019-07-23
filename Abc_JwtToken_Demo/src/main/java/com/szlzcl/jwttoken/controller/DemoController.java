@@ -60,7 +60,7 @@ public class DemoController {
             try {
                 token = JwtUtil.generateToken(payloadJsonString, signatureAlgorithmSecret);
             } catch (JOSEException e) {
-                log.info("生成token失败！", e);
+                log.error("生成token失败！", e);
                 return "生成token失败";
             }
             return token;
@@ -87,10 +87,10 @@ public class DemoController {
         try {
             payloadJsonString = JwtUtil.verifySignature(token, signatureAlgorithmSecret);
         } catch (JwtSignatureVerifyException e) {
-            log.info("token签名验证失败， token已经被篡改！", e);
+            log.error("token签名验证失败， token已经被篡改！", e);
             return "token签名验证失败， token已经被篡改！";
         } catch (JOSEException | ParseException e) {
-            log.info("验证token签名时，系统异常！", e);
+            log.error("验证token签名时，系统异常！", e);
             return "验证token签名时，系统异常！";
         }
 
