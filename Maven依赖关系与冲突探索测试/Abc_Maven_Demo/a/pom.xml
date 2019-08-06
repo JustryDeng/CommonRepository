@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>maven-demo</artifactId>
+        <groupId>com.aspire</groupId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>a</artifactId>
+
+    <dependencies>
+
+        <!--    ++++++++++++++++++++++ 验证【最短路径】原则 ++++++++++++++++++++++    -->
+        <!--
+                  此时d下的fastjson-1.2.10(即:d -> fastjson-1.2.10)生效，
+                  c下的e下的fastjson-1.2.11(即:c -> e ->fastjson-1.2.11)不生效
+                  MyWebMvcConfigurationSupport里面【报错】
+         -->
+        <!-- <dependency>-->
+        <!--     <groupId>com.aspire</groupId>-->
+        <!--     <artifactId>c</artifactId>-->
+        <!--     <version>0.0.1-SNAPSHOT</version>-->
+        <!-- </dependency>-->
+        <!-- <dependency>-->
+        <!--     <groupId>com.aspire</groupId>-->
+        <!--     <artifactId>d</artifactId>-->
+        <!--     <version>0.0.1-SNAPSHOT</version>-->
+        <!-- </dependency>-->
+        <!--
+          此时e下的fastjson-1.2.11(即:e -> fastjson-1.2.11)生效，
+              b下的d下的fastjson-1.2.10(即:b -> d ->fastjson-1.2.10)不生效
+              MyWebMvcConfigurationSupport里面【不报错】
+        -->
+         <dependency>
+             <groupId>com.aspire</groupId>
+             <artifactId>e</artifactId>
+             <version>0.0.1-SNAPSHOT</version>
+         </dependency>
+         <dependency>
+             <groupId>com.aspire</groupId>
+             <artifactId>b</artifactId>
+             <version>0.0.1-SNAPSHOT</version>
+         </dependency>
+        <!--
+         此时pom.xml下的fastjson-1.2.10生效，
+             e下的fastjson-1.2.11(即:e -> fastjson-1.2.11)不生效，
+             MyWebMvcConfigurationSupport里面【报错】
+        -->
+        <!-- <dependency>-->
+        <!--     <groupId>com.aspire</groupId>-->
+        <!--     <artifactId>e</artifactId>-->
+        <!--     <version>0.0.1-SNAPSHOT</version>-->
+        <!-- </dependency>-->
+        <!-- <dependency>-->
+        <!--     <groupId>com.alibaba</groupId>-->
+        <!--     <artifactId>fastjson</artifactId>-->
+        <!--     <version>1.2.10</version>-->
+        <!-- </dependency>-->
+
+        <!--
+         此时pom.xml下的fastjson-1.2.11生效，
+             d下的fastjson-1.2.10(即:d -> fastjson-1.2.10)不生效，
+             MyWebMvcConfigurationSupport里面【不报错】
+        -->
+        <!-- <dependency>-->
+        <!--     <groupId>com.aspire</groupId>-->
+        <!--     <artifactId>d</artifactId>-->
+        <!--     <version>0.0.1-SNAPSHOT</version>-->
+        <!-- </dependency>-->
+        <!-- <dependency>-->
+        <!--     <groupId>com.alibaba</groupId>-->
+        <!--     <artifactId>fastjson</artifactId>-->
+        <!--     <version>1.2.11</version>-->
+        <!-- </dependency>-->
+
+        <!--    ++++++++++++++++++++++ 验证【最先声明】原则 ++++++++++++++++++++++    -->
+        <!--      此时c依赖里面的fastjson-1.2.10生效，MyWebMvcConfigurationSupport里面【报错】  -->
+        <!--
+          此时d下的fastjson-1.2.10(即:d -> fastjson-1.2.10)生效，
+              e下的fastjson-1.2.11(即:e -> fastjson-1.2.11)不生效，
+              MyWebMvcConfigurationSupport里面【报错】
+        -->
+        <!-- <dependency>-->
+        <!--     <groupId>com.aspire</groupId>-->
+        <!--     <artifactId>d</artifactId>-->
+        <!--     <version>0.0.1-SNAPSHOT</version>-->
+        <!-- </dependency>-->
+        <!-- <dependency>-->
+        <!--     <groupId>com.aspire</groupId>-->
+        <!--     <artifactId>e</artifactId>-->
+        <!--     <version>0.0.1-SNAPSHOT</version>-->
+        <!-- </dependency>-->
+        <!--
+          此时e下的fastjson-1.2.11(即:e -> fastjson-1.2.11)生效，
+              d下的fastjson-1.2.10(即:d -> fastjson-1.2.10)不生效，
+              MyWebMvcConfigurationSupport里面【不报错】
+        -->
+        <!-- <dependency>-->
+        <!--     <groupId>com.aspire</groupId>-->
+        <!--     <artifactId>e</artifactId>-->
+        <!--     <version>0.0.1-SNAPSHOT</version>-->
+        <!-- </dependency>-->
+        <!-- <dependency>-->
+        <!--     <groupId>com.aspire</groupId>-->
+        <!--     <artifactId>d</artifactId>-->
+        <!--     <version>0.0.1-SNAPSHOT</version>-->
+        <!-- </dependency>-->
+
+
+        <!--    ++++++++++++++++++++++ 验证【最后声明】原则 ++++++++++++++++++++++    -->
+        <!--
+          此时pom.xml下的fastjson-1.2.10)生效，pom.xml下的ffastjson-1.2.11不生效
+             MyWebMvcConfigurationSupport里面【报错】
+        -->
+        <!-- <dependency>-->
+        <!--     <groupId>com.alibaba</groupId>-->
+        <!--     <artifactId>fastjson</artifactId>-->
+        <!--     <version>1.2.11</version>-->
+        <!-- </dependency>-->
+        <!-- <dependency>-->
+        <!--     <groupId>com.alibaba</groupId>-->
+        <!--     <artifactId>fastjson</artifactId>-->
+        <!--     <version>1.2.10</version>-->
+        <!-- </dependency>-->
+
+        <!--
+          此时pom.xml下的fastjson-1.2.11)生效，pom.xml下的ffastjson-1.2.10不生效
+             MyWebMvcConfigurationSupport里面【不报错】
+        -->
+        <!-- <dependency>-->
+        <!--     <groupId>com.alibaba</groupId>-->
+        <!--     <artifactId>fastjson</artifactId>-->
+        <!--     <version>1.2.10</version>-->
+        <!-- </dependency>-->
+        <!-- <dependency>-->
+        <!--     <groupId>com.alibaba</groupId>-->
+        <!--     <artifactId>fastjson</artifactId>-->
+        <!--     <version>1.2.11</version>-->
+        <!-- </dependency>-->
+
+
+
+        <!--    ++++++++++++++++++++++ 验证通过【exclusions】解决冲突 ++++++++++++++++++++++    -->
+        <!--
+             b -> d -> fastjson-1.2.10
+             e -> fastjson-1.2.11
+             按照最短路径原则，应该是选择fastjson-1.2.10的，但是我们可以通过
+             将e中的fastjson-1.2.11排除掉，然后maven就会选择b -> d -> fastjson-1.2.10了。
+        -->
+        <!-- <dependency>-->
+        <!--     <groupId>com.aspire</groupId>-->
+        <!--     <artifactId>e</artifactId>-->
+        <!--     <version>0.0.1-SNAPSHOT</version>-->
+        <!--     <exclusions>-->
+        <!--         <exclusion>-->
+        <!--             <groupId>com.alibaba</groupId>-->
+        <!--             <artifactId>fastjson</artifactId>-->
+        <!--         </exclusion>-->
+        <!--     </exclusions>-->
+        <!-- </dependency>-->
+        <!-- <dependency>-->
+        <!--     <groupId>com.aspire</groupId>-->
+        <!--     <artifactId>b</artifactId>-->
+        <!--     <version>0.0.1-SNAPSHOT</version>-->
+        <!-- </dependency>-->
+
+
+        <!--    ++++++++++++++++++++++ 验证通过【dependencyManagement】解决冲突 ++++++++++++++++++++++    -->
+        <!--
+             b -> d -> fastjson-1.2.10
+             e -> fastjson-1.2.11
+             按照最短路径原则，应该是选择fastjson-1.2.10的，但是我们可以通过
+             在dependencyManagement标签中，指定某个依赖使用哪一个版本，如下面的
+             dependencyManagement标签中就指定了fastjson使用1.2.10版本。
+        -->
+        <!-- <dependency>-->
+        <!--     <groupId>com.aspire</groupId>-->
+        <!--     <artifactId>e</artifactId>-->
+        <!--     <version>0.0.1-SNAPSHOT</version>-->
+        <!-- </dependency>-->
+        <!-- <dependency>-->
+        <!--     <groupId>com.aspire</groupId>-->
+        <!--     <artifactId>b</artifactId>-->
+        <!--     <version>0.0.1-SNAPSHOT</version>-->
+        <!-- </dependency>-->
+
+    </dependencies>
+
+
+    <!--
+         dependencyManagement的作用有两个:
+         一:指定使用某个依赖的哪一个版本。
+         二:统一管理版本，在dependencyManagement指定版本号后，
+            在与dependencyManagement同级的dependencies标签
+            里面，引入依赖时，就可以不指定版本号了。
+    -->
+    <!-- <dependencyManagement>-->
+    <!--     <dependencies>-->
+    <!--         <dependency>-->
+    <!--             <groupId>com.alibaba</groupId>-->
+    <!--             <artifactId>fastjson</artifactId>-->
+    <!--             <version>1.2.10</version>-->
+    <!--         </dependency>-->
+    <!--     </dependencies>-->
+    <!-- </dependencyManagement>-->
+
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <mainClass>com.szlzcl.maven.demo.AbcApplication</mainClass>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
