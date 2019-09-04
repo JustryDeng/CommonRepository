@@ -204,8 +204,8 @@
 
 <!--                注:文件路径可以是绝对路径，也可以是相对路径(相对pom.xml的路径)。-->
 
-<!--                注:如果写绝对路径，不要使用${project.basedir}或${pom.basedir};-->
-<!--                   在profile里面,${}取不到值的。-->
+<!--                注:在exists标签里，如果写绝对路径，不要使用${project.basedir}或-->
+<!--                   ${pom.basedir};经本人测试，在exists标签里使用${}取不到值。-->
 
 <!--                注:missing与exists最好不要同时使用。 如果同时使用的话，missing就-->
 <!--                   会形同虚设，是否激活此profile完全由exists决定,。-->
