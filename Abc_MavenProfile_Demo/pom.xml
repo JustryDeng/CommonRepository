@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.1.7.RELEASE</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
+    <groupId>com.szlaozicl</groupId>
+    <artifactId>maven-profile</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>maven-profile</name>
+    <description>根据不同的环境，加载不同的依赖</description>
+
+    <properties>
+        <java.version>1.8</java.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
+
+
+<!--    &lt;!&ndash; ************** 使用mvn ... -P xxx指令，指定激活id为xxx的profile ************** &ndash;&gt;-->
+<!--    <profiles>-->
+<!--        &lt;!&ndash; 测试环境 &ndash;&gt;-->
+<!--        <profile>-->
+<!--            &lt;!&ndash; profile唯一id &ndash;&gt;-->
+<!--            <id>test-id</id>-->
+<!--            &lt;!&ndash; 引入fastjson依赖 &ndash;&gt;-->
+<!--            <dependencies>-->
+<!--                &lt;!&ndash; fastjson &ndash;&gt;-->
+<!--                <dependency>-->
+<!--                    <groupId>com.alibaba</groupId>-->
+<!--                    <artifactId>fastjson</artifactId>-->
+<!--                    <version>1.2.58</version>-->
+<!--                </dependency>-->
+<!--            </dependencies>-->
+<!--        </profile>-->
+
+<!--        &lt;!&ndash; 生产环境 &ndash;&gt;-->
+<!--        <profile>-->
+<!--            &lt;!&ndash; profile唯一id &ndash;&gt;-->
+<!--            <id>prod-id</id>-->
+<!--            &lt;!&ndash; 引入lombok依赖 &ndash;&gt;-->
+<!--            <dependencies>-->
+<!--                &lt;!&ndash; lombok &ndash;&gt;-->
+<!--                <dependency>-->
+<!--                    <groupId>org.projectlombok</groupId>-->
+<!--                    <artifactId>lombok</artifactId>-->
+<!--                    <optional>true</optional>-->
+<!--                </dependency>-->
+<!--            </dependencies>-->
+<!--        </profile>-->
+<!--    </profiles>-->
+
+
+
+<!--    &lt;!&ndash; ************** 设置默认激活 ************** &ndash;&gt;-->
+<!--    <profiles>-->
+<!--        &lt;!&ndash; 测试环境 &ndash;&gt;-->
+<!--        <profile>-->
+<!--            <id>test-id</id>-->
+<!--            <activation>-->
+<!--            &lt;!&ndash; 设置默认激活 &ndash;&gt;-->
+<!--            <activeByDefault>true</activeByDefault>-->
+<!--            </activation>-->
+<!--            <dependencies>-->
+<!--                <dependency>-->
+<!--                    <groupId>com.alibaba</groupId>-->
+<!--                    <artifactId>fastjson</artifactId>-->
+<!--                    <version>1.2.58</version>-->
+<!--                </dependency>-->
+<!--            </dependencies>-->
+<!--        </profile>-->
+
+<!--        &lt;!&ndash; 生产环境 &ndash;&gt;-->
+<!--        <profile>-->
+<!--            <id>prod-id</id>-->
+<!--            <dependencies>-->
+<!--                <dependency>-->
+<!--                    <groupId>org.projectlombok</groupId>-->
+<!--                    <artifactId>lombok</artifactId>-->
+<!--                    <optional>true</optional>-->
+<!--                </dependency>-->
+<!--            </dependencies>-->
+<!--        </profile>-->
+<!--    </profiles>-->
+
+
+<!--    &lt;!&ndash; ************** 根据jdk激活 ************** &ndash;&gt;-->
+<!--    <profiles>-->
+<!--        &lt;!&ndash; 测试环境 &ndash;&gt;-->
+<!--        <profile>-->
+<!--            <id>test-id</id>-->
+<!--            <dependencies>-->
+<!--                <dependency>-->
+<!--                    <groupId>com.alibaba</groupId>-->
+<!--                    <artifactId>fastjson</artifactId>-->
+<!--                    <version>1.2.58</version>-->
+<!--                </dependency>-->
+<!--            </dependencies>-->
+<!--        </profile>-->
+
+<!--        &lt;!&ndash; 生产环境 &ndash;&gt;-->
+<!--        <profile>-->
+<!--            <id>prod-id</id>-->
+<!--            <activation>-->
+<!--                &lt;!&ndash;-->
+<!--                   当jdk的版本号是以下面的值开头时， 激活此profile-->
+<!--                   即:当jdk的版本号是startWith下面的值时，激活此profile-->
+<!--                 &ndash;&gt;-->
+<!--                <jdk>1.8.0_</jdk>-->
+<!--                &lt;!&ndash;-->
+<!--                    还可以取反，当jdk的版本号 不是 startWith下面的值时，激活此配置-->
+<!--                 &ndash;&gt;-->
+<!--                &lt;!&ndash; <jdk>!1.8</jdk> &ndash;&gt;-->
+<!--            </activation>-->
+<!--            <dependencies>-->
+<!--                <dependency>-->
+<!--                    <groupId>org.projectlombok</groupId>-->
+<!--                    <artifactId>lombok</artifactId>-->
+<!--                    <optional>true</optional>-->
+<!--                </dependency>-->
+<!--            </dependencies>-->
+<!--        </profile>-->
+<!--    </profiles>-->
+
+    <!-- ************** 根据os激活 ************** -->
+    <profiles>
+        <!-- 测试环境 -->
+        <profile>
+            <id>test-id</id>
+            <dependencies>
+                <dependency>
+                    <groupId>com.alibaba</groupId>
+                    <artifactId>fastjson</artifactId>
+                    <version>1.2.58</version>
+                </dependency>
+            </dependencies>
+        </profile>
+
+        <!-- 生产环境 -->
+        <profile>
+            <id>prod-id</id>
+            <activation>
+                <!--
+                    当操作系统满足下述所有条件时，激活
+                    注: 如果有多个条件，那么必须所有条件都满足时，才会激活对应的profile
+                 -->
+                <os>
+                    <!-- 操作系统名，如【Windows 10】 -->
+                    <name>Windows 10</name>
+                    <!-- 操作系统隶属， 如【windows】、【unix】 -->
+                    <family>windows</family>
+                    <!-- 操作系统的体系结构，如【amd64】 -->
+                    <arch>amd64</arch>
+                    <!-- 操作系统版本号，如【10.0】 -->
+                    <version>10.0</version>
+                </os>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>org.projectlombok</groupId>
+                    <artifactId>lombok</artifactId>
+                    <optional>true</optional>
+                </dependency>
+            </dependencies>
+        </profile>
+    </profiles>
+
+
+<!--    &lt;!&ndash; ************** 根据file存在与否激活 ************** &ndash;&gt;-->
+<!--    <profiles>-->
+<!--        &lt;!&ndash; 测试环境 &ndash;&gt;-->
+<!--        <profile>-->
+<!--            <id>test-id</id>-->
+<!--            <dependencies>-->
+<!--                <dependency>-->
+<!--                    <groupId>com.alibaba</groupId>-->
+<!--                    <artifactId>fastjson</artifactId>-->
+<!--                    <version>1.2.58</version>-->
+<!--                </dependency>-->
+<!--            </dependencies>-->
+<!--        </profile>-->
+
+<!--        &lt;!&ndash; 生产环境 &ndash;&gt;-->
+<!--        <profile>-->
+<!--            <id>prod-id</id>-->
+<!--            &lt;!&ndash;-->
+<!--                根据文件存在与否， 来激活profile-->
+
+<!--                注:文件路径可以是绝对路径，也可以是相对路径(相对pom.xml的路径)。-->
+
+<!--                注:如果写绝对路径，不要使用${project.basedir}或${pom.basedir};-->
+<!--                   在profile里面,${}取不到值的。-->
+
+<!--                注:missing与exists最好不要同时使用。 如果同时使用的话，missing就-->
+<!--                   会形同虚设，是否激活此profile完全由exists决定,。-->
+<!--            &ndash;&gt;-->
+<!--            <activation>-->
+<!--                <file>-->
+<!--                    &lt;!&ndash; 相对路径示例 &ndash;&gt;-->
+<!--                    <exists>src/main/resources/xyz.yml</exists>-->
+<!--                    &lt;!&ndash; <missing>src/main/resources/abcd.yml</missing> &ndash;&gt;-->
+
+<!--                    &lt;!&ndash; 绝对路径示例 &ndash;&gt;-->
+<!--                    &lt;!&ndash; <exists>C:/Users/JustryDeng/Desktop/zx-lw.log</exists> &ndash;&gt;-->
+<!--                    &lt;!&ndash; <missing>/usr/apps/file/info.properties</missing> &ndash;&gt;-->
+<!--                </file>-->
+<!--            </activation>-->
+<!--            <dependencies>-->
+<!--                <dependency>-->
+<!--                    <groupId>org.projectlombok</groupId>-->
+<!--                    <artifactId>lombok</artifactId>-->
+<!--                    <optional>true</optional>-->
+<!--                </dependency>-->
+<!--            </dependencies>-->
+<!--        </profile>-->
+<!--    </profiles>-->
+
+
+<!--    &lt;!&ndash; ************** 根据 maven指令参数-D 激活 ************** &ndash;&gt;-->
+<!--    <profiles>-->
+<!--        &lt;!&ndash; 测试环境 &ndash;&gt;-->
+<!--        <profile>-->
+<!--            <id>test-id</id>-->
+<!--            <dependencies>-->
+<!--                <dependency>-->
+<!--                    <groupId>com.alibaba</groupId>-->
+<!--                    <artifactId>fastjson</artifactId>-->
+<!--                    <version>1.2.58</version>-->
+<!--                </dependency>-->
+<!--            </dependencies>-->
+<!--        </profile>-->
+
+<!--        &lt;!&ndash; 生产环境 &ndash;&gt;-->
+<!--        <profile>-->
+<!--            <id>prod-id</id>-->
+<!--            <activation>-->
+<!--                &lt;!&ndash;-->
+<!--                    maven指令参数-D激活-->
+<!--                    注:与根据maven指令参数-P 指定profile的id进行激活类似-->
+<!--                &ndash;&gt;-->
+<!--                <property>-->
+<!--                    <name>pk</name>-->
+<!--                    <value>pv</value>-->
+<!--                </property>-->
+<!--            </activation>-->
+<!--            <dependencies>-->
+<!--                <dependency>-->
+<!--                    <groupId>org.projectlombok</groupId>-->
+<!--                    <artifactId>lombok</artifactId>-->
+<!--                    <optional>true</optional>-->
+<!--                </dependency>-->
+<!--            </dependencies>-->
+<!--        </profile>-->
+<!--    </profiles>-->
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+</project>
