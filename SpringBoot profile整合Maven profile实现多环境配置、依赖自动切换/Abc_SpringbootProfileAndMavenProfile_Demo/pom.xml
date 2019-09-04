@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.1.7.RELEASE</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
+    <groupId>com.szlaozicl</groupId>
+    <artifactId>springboot-profile-and-maven-profile</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>springboot-profile-and-maven-profile</name>
+    <description>springboot-profile搭配maven-profile</description>
+
+    <properties>
+        <java.version>1.8</java.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <profiles>
+        <!-- 测试环境 -->
+        <profile>
+            <id>test-id</id>
+            <!-- 自定义一个变量， 标识此 maven profile 对应 哪一个 spring-boot环境 -->
+            <properties>
+                <curr.spring-boot.env>test</curr.spring-boot.env>
+            </properties>
+            <!-- 当存在指定文件时，激活此profile -->
+            <activation>
+                <file>
+                    <exists>src/main/resources/env.test</exists>
+                </file>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>com.alibaba</groupId>
+                    <artifactId>fastjson</artifactId>
+                    <version>1.2.58</version>
+                </dependency>
+            </dependencies>
+        </profile>
+
+        <!-- 生产环境 -->
+        <profile>
+            <id>prod-id</id>
+            <!-- 自定义一个变量， 标识此 maven profile 对应 哪一个 spring-boot环境 -->
+            <properties>
+                <curr.spring-boot.env>prod</curr.spring-boot.env>
+            </properties>
+            <!-- 当存在指定文件时，激活此profile -->
+            <activation>
+                <file>
+                    <exists>src/main/resources/env.prod</exists>
+                </file>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>org.projectlombok</groupId>
+                    <artifactId>lombok</artifactId>
+                    <optional>true</optional>
+                </dependency>
+            </dependencies>
+        </profile>
+    </profiles>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+
+
+        <!-- 设置打包时，需要额外打包哪些资源 -->
+        <resources>
+
+            <resource>
+                <!--
+                     directory用于指定: 存储资源的根目录。
+                     注:其路径是(相对于POM文件的)相对路径。
+                     注:如果只写一个directory的话，那么会默认include其下面的所有资源。
+                -->
+                <directory>src/main/resources/</directory>
+
+                <!--
+                    Whether resources are filtered to replace tokens with parameterised values or not.
+                    是否过滤资源，用pom中的对应值替换文件中的对应占位符
+
+                    注:在spring-boot-starter-parent的pom文件中，将读取pom.xml文件数据的占位符替换为了@,
+                       使用时通过@key@获取key对应的vakue即可
+                -->
+                <filtering>true</filtering>
+                <!--
+                     先把所有的排除掉，然后再在下面的resourse里面，
+                     根据不同的maven profile激活情况，引入相应的资源文件及进来
+                 -->
+                <excludes>
+                    <exclude>test/*</exclude>
+                    <exclude>prod/*</exclude>
+                </excludes>
+            </resource>
+
+            <resource>
+                <!--
+                     若激活的maven profile不同，那么取出来的curr.spring-boot.env值就会不同，
+                     那么根据这里的配置，最终打进包的资源也就不同了
+                -->
+                <directory>src/main/resources/${curr.spring-boot.env}</directory>
+            </resource>
+        </resources>
+    </build>
+
+</project>
