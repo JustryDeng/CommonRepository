@@ -15,8 +15,8 @@ import java.util.Properties;
 public class MavenProfileApplication {
 
     public static void main(String[] args) {
-//        SpringApplication.run(MavenProfileApplication.class, args);
-        osInfo();
+       SpringApplication.run(MavenProfileApplication.class, args);
+       // osInfo();
 
     }
 
