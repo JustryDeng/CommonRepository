@@ -7,14 +7,16 @@ import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.SecureRandom;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.*;
-import java.util.stream.DoubleStream;
-import java.util.stream.IntStream;
-import java.util.stream.LongStream;
-import java.util.stream.Stream;
+import java.util.stream.*;
 
 /**
  * stream学习
@@ -902,48 +904,1080 @@ public class StreamTests {
         System.out.println(Arrays.deepToString(array));
     }
 
-//    /**
-//     * collect(Collector<? super T,A,R> collector):
-//     */
-//    @Test
-//    public void test27_0() {
-//        // 数据准备
-//        List<Staff> tmpList = Lists.newArrayList(
-//                Staff.builder().name("张三").age(18).workStartTimestamp(1234555L).faceScore(99.9D).build(),
-//                Staff.builder().name("李四").age(25).workStartTimestamp(2323233L).faceScore(89.2D).build(),
-//                Staff.builder().name("王五").age(40).workStartTimestamp(8484848L).faceScore(68.7D).build()
-//        );
-//        Stream<Staff> stream = tmpList.parallelStream().collect(Collectors.to);
-//    }
-//
-//    /**
-//     * collect(Supplier<R> supplier, BiConsumer<R,? super T> accumulator, BiConsumer<R,R> combiner)
-//     */
-//    @Test
-//    public void test28() {
-//    }
-//    /// --------------------------------------------------------------- IntStream
-//
-//
-//    /// --------------------------------------------------------------- LongStream
-//
-//    /// --------------------------------------------------------------- DoubleStream
-//
-//    /// --------------------------------------------------------------- 相关简单拓展
-//
-//    /**
-//     * 利用Stream, 获取文件内容、处理文件内容
-//     */
-//    @Test
-//    public void other1() throws IOException {
-//        // 获取文件数据行的stream
-//        Path path = Paths.get("C:\\Users\\JustryDeng\\Desktop\\abc.txt");
-//        Stream<String> line = Files.lines(path, StandardCharsets.UTF_8).parallel();
-//        // 注意: 因为这里用的是并行流，所以这里map中的式子，一定要保证线程安全
-//        line.map(x -> {
-//            x = x.replace("夹杂中文", "【夹杂JustryDeng中文】");
-//            return x;
-//        }).forEachOrdered(System.out::println);
-//    }
+    /**
+     * 统计Stream<T>流中, (根据)每个元素T得到的类型为int/long/double的数值的平均值。
+     *
+     * 注:统计结果为Double。
+     *
+     * 注:Stream的collect方法，签名为:
+     *       <R, A> R collect(Collector<? super T, A, R> collector)
+     *
+     * 注:Collectors的caveragingLong方法，签名为:
+     *       Collector<T, ?, Double> averagingInt(ToIntFunction<? super T> mapper)
+     *
+     * 注:Collectors的caveragingLong方法，签名为:
+     *       Collector<T, ?, Double> averagingLong(ToLongFunction<? super T> mapper)
+     *
+     * 注:Collectors的caveragingLong方法，签名为:
+     *       Collector<T, ?, Double> averagingDouble(ToDoubleFunction<? super T> mapper)
+     *
+     * 注:当前stream元素类型为T。
+     *
+     * 注:由于计算机二进制存数的问题，返回的double值可能存在误差。
+     *
+     * 建议:尽量少用此方法，如果非要用的话，建议用在那些对精度要求不高的场景下，且对结果进行舍入。
+     */
+    @Test
+    public void test27_0() {
+        // 数据准备
+        List<Staff> tmpList = Lists.newArrayList(
+                Staff.builder().name("张三").age(18).workStartTimestamp(1L).faceScore(99.9D).build(),
+                Staff.builder().name("李四").age(24).workStartTimestamp(2L).faceScore(89.2D).build(),
+                Staff.builder().name("王五").age(45).workStartTimestamp(3L).faceScore(68.6D).build()
+        );
+
+        // Collectors.averagingInt进行统计
+        Double averageOne = tmpList.parallelStream().collect(
+                // -> 根据Int值统计出平均值Double的统计器
+                Collectors.averagingInt(
+                        x -> x == null ? 0 : x.getAge()
+                )
+
+        );
+        // 输出: 29.0
+        System.out.println(averageOne);
+
+        // Collectors.averagingLong进行统计
+        Double averageTwo = tmpList.parallelStream().collect(
+                // -> 根据Long值统计出平均值Double的统计器
+                Collectors.averagingLong(
+                        x -> x == null ? 0L : x.getWorkStartTimestamp()
+                )
+        );
+        // 输出: 2.0
+        System.out.println(averageTwo);
+
+        // Collectors.averagingDouble进行统计
+        Double averageThree = tmpList.parallelStream().collect(
+                // -> 根据Double值统计出平均值Double的统计器
+                Collectors.averagingDouble(
+                        x -> x == null ? 0D : x.getFaceScore()
+                )
+        );
+        // 输出: 85.90000000000002
+        // 注:由于计算机二进制存数的问题，返回的double值可能存在误差, 如:这里理
+        //    论上应返回85.9, 但是实际上返回的是85.90000000000002
+        System.out.println(averageThree);
+    }
+
+    /**
+     * 先按照Collectors对Stream<T>流中的元素进行统计(得到R), 再利用Function<R,RR>得到并返回RR。
+     * 即:对流的元素先Collector<T,A,R> downstream,再对得到的结果进行Function<R,RR> finisher，最后返回RR。
+     *
+     * 注:Stream的collect方法，签名为:
+     *       <R, A> R collect(Collector<? super T, A, R> collector)
+     *
+     * 注:Collectors的collectingAndThen方法，签名为:
+     *       Collector<T,A,RR> collectingAndThen(Collector<T,A,R> downstream,
+     *                                           Function<R,RR> finisher)
+     *
+     * 注:当前stream类型为T。
+     */
+    @Test
+    public void test27_1() {
+        // 数据准备
+        List<Staff> tmpList = Lists.newArrayList(
+                Staff.builder().name("张三").age(18).workStartTimestamp(1L).faceScore(99.9D).build(),
+                Staff.builder().name("李四").age(25).workStartTimestamp(2L).faceScore(89.2D).build(),
+                Staff.builder().name("王五").age(40).workStartTimestamp(3L).faceScore(68.7D).build()
+        );
+
+        // 为便于理解，这里 先编写一个Function<R,RR> finisher
+        Function<Set<Staff>, Integer> function = Set::size;
+
+        // 先Collector<T,A,R> downstream,再Function<R,RR> finisher，最后返回RR。
+        Integer size = tmpList.parallelStream().collect(
+                Collectors.collectingAndThen(
+                        Collectors.toSet(),
+                        function
+                )
+        );
+        // 输出: 3
+        System.out.println(size);
+    }
+
+    /**
+     * 对stream中的元素进行计数。
+     *
+     * 注:Stream的collect方法，签名为:
+     *       <R, A> R collect(Collector<? super T, A, R> collector)
+     *
+     * 注:Collectors的counting方法，签名为:
+     *       Collector<T, ?, Long> counting()
+     *
+     * 注:当前stream类型为T。
+     */
+    @Test
+    public void test27_2() {
+        // 数据准备
+        List<Staff> tmpList = Lists.newArrayList(
+                Staff.builder().name("张三").age(18).workStartTimestamp(1L).faceScore(99.9D).build(),
+                Staff.builder().name("李四").age(25).workStartTimestamp(2L).faceScore(89.2D).build(),
+                Staff.builder().name("王五").age(40).workStartTimestamp(3L).faceScore(68.7D).build()
+        );
+        @SuppressWarnings("all")
+        // 对stream中的元素进行计数。 等价于Stream的count()方法。
+                Long count = tmpList.parallelStream().collect(
+                Collectors.counting()
+        );
+        // 输出: 3
+        System.out.println(count);
+    }
+
+    /**
+     * 对stream中的元素进行分组:
+     *     先通过classifier，计算每个元素对应的key,然后再通过Collectors的
+     *     groupingBy方法，按key值分组，得到并返回Map<K, List<T>>
+     *
+     * 注:Stream的collect方法，签名为:
+     *       <R, A> R collect(Collector<? super T, A, R> collector)
+     *
+     * 注:Collectors的重载groupingBy方法，(本次示例的方法的)签名为:
+     *       Collector<T, ?, Map<K, List<T>>> groupingBy(Function<? super T, ? extends K> classifier)
+     *    追注:此方法内部调用的实际是groupingBy(classifier, HashMap::new, toList())方法
+     *    追注:此方法对应的线程安全的方法为(使用方式几乎一致):
+     *         Collector<T, ?, ConcurrentMap<K, List<T>>> groupingByConcurrent(Function<? super T, ? extends K> classifier)
+     *
+     * 注:当前stream类型为T。
+     *
+     *
+     */
+    @Test
+    public void test27_3() {
+        // 数据准备
+        List<Staff> tmpList = Lists.newArrayList(
+                Staff.builder().name("张三1").age(18).build(),
+                Staff.builder().name("张三2").age(15).build(),
+                Staff.builder().name("李四1").age(25).build(),
+                Staff.builder().name("李四2").age(23).build(),
+                Staff.builder().name("王五1").age(55).build(),
+                Staff.builder().name("王五2").age(40).build()
+        );
+
+        // 为便于理解，这里 先编写一个Function<? super T, ? extends K> classifier
+        // 这个classifier的作用是: 根据元素T，返回其对应的K, 然后Collectors.groupingBy会根据K，
+        // 将stream中的元素按键值对分组为Map<K, List<T>
+        Function<Staff, String> function = x -> x.getName() == null ? "" : x.getName().substring(0, 1);
+
+        // 使用Collectors.groupingBy，按照(通过Function得到的)key进行分组，得到并返回Map<K, List<T>>
+        Map<String, List<Staff>> resultMap = tmpList.parallelStream().collect(
+                Collectors.groupingBy(function)
+        );
+
+        // 输出(为方便观察，本人简单整理了一下输出结果):
+        // {
+        //   张=[
+        //       Staff(name=张三1, age=18, staffNo=null, faceScore=null, workStartTimestamp=null),
+        //       Staff(name=张三2, age=15, staffNo=null, faceScore=null, workStartTimestamp=null)
+        //      ],
+        //
+        //   王=[
+        //       Staff(name=王五1, age=55, staffNo=null, faceScore=null, workStartTimestamp=null),
+        //       Staff(name=王五2, age=40, staffNo=null, faceScore=null, workStartTimestamp=null)
+        //      ],
+        //
+        //   李=[
+        //       Staff(name=李四1, age=25, staffNo=null, faceScore=null, workStartTimestamp=null),
+        //       Staff(name=李四2, age=23, staffNo=null, faceScore=null, workStartTimestamp=null)
+        //      ]
+        // }
+        System.out.println(resultMap);
+    }
+
+    /**
+     * 对stream中的元素进行分组:
+     *     先通过classifier，计算每个元素对应的key,然后根据key进行分组，然后对每组的
+     *     元素T进行downstream统计，得到每组的结果D， 最终返回Map<K, D>。
+     *     即:先通过classifier得到Map<K, List<T>>，再通过
+     *        对每个List<T>进行downstream统计，最终得到Map<K, D>。
+     *
+     * 注:Stream的collect方法，签名为:
+     *       <R, A> R collect(Collector<? super T, A, R> collector)
+     *
+     * 注:Collectors的重载groupingBy方法，(本次示例的方法的)签名为:
+     *       Collector<T, ?, Map<K, D>> groupingBy(Function<? super T, ? extends K> classifier,
+     *                                             Collector<? super T, A, D> downstream)
+     *    追注:此方法内部调用的实际是groupingBy(classifier, HashMap::new, downstream)方法
+     *    追注:此方法对应的线程安全的方法为(使用方式几乎一致):
+     *         Collector<T, ?, ConcurrentMap<K, D>> groupingByConcurrent(Function<? super T, ? extends K> classifier,
+     *                                                                   Collector<? super T, A, D> downstream)
+     *
+     * 注:当前stream类型为T。
+     */
+    @Test
+    public void test27_4() {
+        // 数据准备
+        List<Staff> tmpList = Lists.newArrayList(
+                Staff.builder().name("张三1").age(18).build(),
+                Staff.builder().name("张三2").age(15).build(),
+                Staff.builder().name("张三3").age(11).build(),
+                Staff.builder().name("李四1").age(25).build(),
+                Staff.builder().name("李四2").age(23).build(),
+                Staff.builder().name("王五1").age(55).build(),
+                Staff.builder().name("王五2").age(40).build()
+        );
+
+        // 为便于理解，这里 先编写一个Function<? super T, ? extends K> classifier
+        Function<Staff, String> function = x -> x.getName() == null ? "" : x.getName().substring(0, 1);
+
+        // 使用Collectors.groupingBy，按照(通过Function得到的)key进行分组并对各组元素进行统计，得到并返回Map<K, D>
+        Map<String, Long> resultMap = tmpList.parallelStream().collect(
+                Collectors.groupingBy(function, Collectors.counting())
+        );
+
+        // 输出: {张=3, 王=2, 李=2}
+        System.out.println(resultMap);
+    }
+
+    /**
+     * 对stream中的元素进行分组:
+     *     先通过classifier，计算每个元素对应的key,然后根据key进行分组，然后对每组的
+     *     元素T进行downstream统计，得到每组的结果D。最终返回Map<K, D>。Map<K, D>
+     *     即对应Supplier<M> mapFactory中的M，换句话说:返回的Map容器由mapFactory进行提供。
+     *     即:先通过classifier得到Map<K, List<T>>，再通过
+     *        对每个List<T>进行downstream统计，并将K和D放入由mapFactory提供
+     *        的M中(即:mapFactory提供的Map中)，并进行返回。
+     *
+     * 注:Stream的collect方法，签名为:
+     *       <R, A> R collect(Collector<? super T, A, R> collector)
+     *
+     * 注:Collectors的重载groupingBy方法，(本次示例的方法的)签名为:
+     *       Collector<T, ?, M> groupingBy(Function<? super T, ? extends K> classifier,
+     *                                     Supplier<M> mapFactory,
+     *                                     Collector<? super T, A, D> downstream)
+     *    追注:此方法对应的线程安全的方法为(使用方式几乎一致):
+     *         Collector<T, ?, M> groupingByConcurrent(Function<? super T, ? extends K> classifier,
+     *                                                 Supplier<M> mapFactory,
+     *                                                 Collector<? super T, A, D> downstream)
+     *
+     * 注:当前stream类型为T。
+     */
+    @Test
+    public void test27_5() {
+        // 数据准备
+        List<Staff> tmpList = Lists.newArrayList(
+                Staff.builder().name("张三1").age(18).build(),
+                Staff.builder().name("张三2").age(15).build(),
+                Staff.builder().name("张三3").age(11).build(),
+                Staff.builder().name("李四1").age(25).build(),
+                Staff.builder().name("李四2").age(23).build(),
+                Staff.builder().name("王五1").age(55).build(),
+                Staff.builder().name("王五2").age(40).build()
+        );
+
+        // 为便于理解，这里 先编写一个Function<? super T, ? extends K> classifier
+        Function<Staff, String> function = x -> x.getName() == null ? "" : x.getName().substring(0, 1);
+
+
+        //  Supplier<M> mapFactory
+        Supplier<TreeMap<String, Long>> mapFactory = TreeMap::new;
+
+        // 使用Collectors.groupingBy，按照(通过Function得到的)key进行分组并对各组元素进行统计，得到并返回Map<K, D>
+        Map<String, Long> resultMap = tmpList.parallelStream().collect(
+                Collectors.groupingBy(function, mapFactory, Collectors.counting())
+        );
+
+        // 输出: {张=3, 王=2, 李=2}
+        System.out.println(resultMap);
+    }
+
+    /**
+     * 对Stream<String>中的元素直接进行拼接。
+     *
+     * 注:Stream的collect方法，签名为:
+     *       <R, A> R collect(Collector<? super T, A, R> collector)
+     *
+     * 注:Collectors的joining方法，签名为:
+     *         Collector<CharSequence, ?, String> joining()
+     *
+     * 注:当前stream类型为T。
+     */
+    @Test
+    public void test27_6() {
+        // 数据准备
+        List<String> tmpList = Lists.newArrayList("A","B","C","D","E");
+
+        String resultStr = tmpList.parallelStream().collect(
+                Collectors.joining()
+        );
+
+        // 输出: ABCDE
+        System.out.println(resultStr);
+    }
+
+    /**
+     * 对Stream<String>中的元素以delimiter为分隔符进行拼接。
+     *
+     * 注:Stream的collect方法，签名为:
+     *       <R, A> R collect(Collector<? super T, A, R> collector)
+     *
+     * 注:Collectors的joining方法，签名为:
+     *         Collector<CharSequence, ?, String> joining(CharSequence delimiter)
+     *
+     * 注:当前stream类型为T。
+     */
+    @Test
+    public void test27_7() {
+        // 数据准备
+        List<String> tmpList = Lists.newArrayList("A","B","C","D","E");
+
+        String resultStr = tmpList.parallelStream().collect(
+                Collectors.joining("-")
+        );
+
+        // 输出: A-B-C-D-E
+        System.out.println(resultStr);
+    }
+
+    /**
+     * 以delimiter为分隔符，以prefix为前缀，以suffix为后缀，对Stream<String>中的元素进行拼接。
+     *
+     * 注:Stream的collect方法，签名为:
+     *       <R, A> R collect(Collector<? super T, A, R> collector)
+     *
+     * 注:Collectors的joining方法，签名为:
+     *         Collector<CharSequence, ?, String> joining(CharSequence delimiter,
+     *                                                    CharSequence prefix,
+     *                                                    CharSequence suffix)
+     *
+     * 注:当前stream类型为T。
+     */
+    @Test
+    public void test27_8() {
+        // 数据准备
+        List<String> tmpList = Lists.newArrayList("A","B","C","D","E");
+
+        String resultStr = tmpList.parallelStream().collect(
+                Collectors.joining("-", "[", "]")
+        );
+
+        // 输出: [A-B-C-D-E]
+        System.out.println(resultStr);
+    }
+
+    /**
+     * 先以mapper将Stream<T>转换为Stream<U>，再用downstream对Stream<U>进行统计。
+     *
+     * 提示:collect(mapping())能做的事，.map().collect()都能做；我们一般都
+     *     使用.map().collect()，而不使用collect(mapping())。
+     *
+     * 注:Stream的collect方法，签名为:
+     *       <R, A> R collect(Collector<? super T, A, R> collector)
+     *
+     * 注:Collectors的mapping方法，签名为:
+     *         Collector<T, ?, R> mapping(Function<? super T, ? extends U> mapper,
+     *                                    Collector<? super U, A, R> downstream)
+     *
+     * 注:当前stream类型为T。
+     */
+    @Test
+    public void test27_9() {
+        // 数据准备
+        List<Staff> tmpList = Lists.newArrayList(
+                Staff.builder().name("张三").age(18).workStartTimestamp(1L).faceScore(99.9D).build(),
+                Staff.builder().name("李四").age(25).workStartTimestamp(2L).faceScore(89.2D).build(),
+                Staff.builder().name("王五").age(40).workStartTimestamp(3L).faceScore(68.7D).build()
+        );
+
+        // 为便于理解，这里 先编写一个Function<? super T, ? extends U> mapper
+        Function<Staff, String> function = Staff::getName;
+        @SuppressWarnings("all")
+        String resultStr = tmpList.parallelStream().collect(
+                Collectors.mapping(
+                        function,
+                        Collectors.joining("&")
+                )
+        );
+        // 输出: 张三&李四&王五
+        System.out.println(resultStr);
+
+        /// 以.map().collect()的方式来实现的话，是这样的:
+        String resultStr2 =  tmpList.parallelStream().map(Staff::getName).collect(Collectors.joining("&"));
+        // 输出: 张三&李四&王五
+        System.out.println(resultStr2);
+    }
+    
+    /**
+     * 根据比较器，筛选出Stream<T>中最大、最小的元素。
+     *
+     * 注:推荐使用.max()、.min()的方式，而非.collect(Collectors.maxBy())、.collect(Collectors.minBy())
+     *
+     * 注:Stream的collect方法，签名为:
+     *       <R, A> R collect(Collector<? super T, A, R> collector)
+     *
+     * 注:Collectors的maxBy方法，签名为:
+     *         Collector<T, ?, Optional<T>> maxBy(Comparator<? super T> comparator)
+     *
+     * 注:Collectors的maxBy方法，签名为:
+     *         Collector<T, ?, Optional<T>> minBy(Comparator<? super T> comparator)
+     *
+     * 注:当前stream类型为T。
+     */
+    @Test
+    @SuppressWarnings("all")
+    public void test27_10() {
+        // 数据准备
+        List<Integer> tmpList = Lists.newArrayList(3, 5, 1, 7, 9);
+
+        // 比较器准备
+        Comparator<Integer> comparator = Comparator.comparingInt(x -> x);
+
+        // -> 最大值
+        // 等价于: tmpList.parallelStream().max(comparator)
+        Optional<Integer> maxResult = tmpList.parallelStream().collect(
+                Collectors.maxBy(comparator)
+        );
+        // 输出: 9
+        maxResult.ifPresent(System.out::println);
+
+        // -> 最小值
+        // 等价于: tmpList.parallelStream().min(comparator)
+        Optional<Integer> minResult = tmpList.parallelStream().collect(
+                Collectors.minBy(comparator)
+        );
+        // 输出: 1
+        minResult.ifPresent(System.out::println);
+    }
+
+    /**
+     * 将Stream<T>中的元素，分为两组: predicate通过的分到key为true的组，否者分到key为false的组,
+     * 最后得到并返回Map<Boolean, List<T>>>。
+     *
+     * 注:Stream的collect方法，签名为:
+     *       <R, A> R collect(Collector<? super T, A, R> collector)
+     *
+     * 注:Collectors的partitioningBy方法，签名为:
+     *         Collector<T, ?, Map<Boolean, List<T>>> partitioningBy(Predicate<? super T> predicate)
+     *    追注:此方法与groupingBy方法类似，也是分组。不过此方法是根据predicate将元素分为key为tru/false两组;
+     *        而groupingBy是根据Function<? super T, ? extends K> classifier来进行的分组。
+     *
+     * 注:当前stream类型为T。
+     */
+    @Test
+    public void test27_11() {
+        // 数据准备
+        List<Integer> tmpList = Lists.newArrayList(3, 5, 1, 7, 9);
+
+        // 准备一个比较器
+        Predicate<Integer> predicate = x -> x > 6;
+
+        // -> 最大值
+        Map<Boolean, List<Integer>> resultMap = tmpList.parallelStream().collect(
+                Collectors.partitioningBy(predicate)
+        );
+        // 输出: {false=[3, 5, 1], true=[7, 9]}
+        System.out.println(resultMap);
+    }
+
+    /**
+     * 将Stream<T>中的元素，分为两组: predicate通过的分到key为true的组，否者分到key为false的组,
+     * 然后通过downstream再对每组进行统计(得到统计结果D)，最后得到并返回Map<Boolean, D>。
+     *
+     * 注:Stream的collect方法，签名为:
+     *       <R, A> R collect(Collector<? super T, A, R> collector)
+     *
+     * 注:Collectors的partitioningBy方法，签名为:
+     *         Collector<T, ?, Map<Boolean, D>> partitioningBy(Predicate<? super T> predicate,
+     *                                                         Collector<? super T, A, D> downstream)
+     *    追注:此方法与groupingBy方法类似,类比着进行理解即可。
+     *
+     * 注:当前stream类型为T。
+     */
+    @Test
+    public void test27_12() {
+        // 数据准备
+        List<Integer> tmpList = Lists.newArrayList(3, 5, 1, 7, 9);
+
+        // 准备一个比较器
+        Predicate<Integer> predicate = x -> x > 6;
+
+        // -> 最大值
+        Map<Boolean, Long> resultMap = tmpList.parallelStream().collect(
+                Collectors.partitioningBy(
+                        predicate,
+                        Collectors.counting()
+                )
+        );
+        // 输出: {false=3, true=2}
+        System.out.println(resultMap);
+    }
+
+    /**
+     * 对Stream<T>中的元素进行归并。
+     * 提示:串行流下的reduce与并行流下的reduce可能结果不一样，如果不太熟悉的话，建议
+     *      使用stream的reduce()，而不使用.stream().collect(Collectors.reducing())。
+     *
+     * 注:Stream的collect方法，签名为:
+     *       <R, A> R collect(Collector<? super T, A, R> collector)
+     *
+     * 注:Collectors的reducing方法，签名为:
+     *        Collector<T, ?, Optional<T>> reducing(BinaryOperator<T> op)
+     *
+     * 注:当前stream类型为T。
+     *
+     * 声明:在stream的collect()方法内部进行reduce的，总共有下述三种方法
+     *      Collector<T,?,Optional<T>> reducing(BinaryOperator<T> op)
+     *      Collector<T,?,T> reducing(T identity, BinaryOperator<T> op)
+     *      Collector<T,?,U> reducing(U identity, Function<? super T,? extends U> mapper, BinaryOperator<U> op),
+     *      此这里只示例第一种。
+     */
+    @Test
+    public void test27_13() {
+        // 数据准备
+        List<Integer> tmpList = Lists.newArrayList(3, 5, 1, 7, 9);
+
+        BinaryOperator<Integer> binaryOperator = Integer::sum;
+        // -> 进行归并
+        @SuppressWarnings("all")
+        Optional<Integer> result = tmpList.stream().collect(
+                Collectors.reducing(binaryOperator)
+        );
+        // 输出: 25
+        result.ifPresent(System.out::println);
+    }
+
+    /**
+     * 对Stream<T>中的元素T“对应”的int/long/double值进行统计，并获得一个统计对象；
+     * 通过此对象可以获得具体的统计信息(如:最大值、最小值、平均值、总和、数量)。
+     *
+     * 注:Stream的collect方法，签名为:
+     *       <R, A> R collect(Collector<? super T, A, R> collector)
+     *
+     * 注:Collectors的summarizingInt方法，签名为:
+     *        Collector<T, ?, IntSummaryStatistics> summarizingInt(ToIntFunction<? super T> mapper)
+     *
+     * 注:Collectors的summarizingLong方法，签名为:
+     *        Collector<T, ?, LongSummaryStatistics> summarizingLong(ToLongFunction<? super T> mapper)
+     *
+     * 注:Collectors的summarizingDouble方法，签名为:
+     *        Collector<T, ?, DoubleSummaryStatistics> summarizingDouble(ToDoubleFunction<? super T> mapper)
+     *
+     * 注:当前stream类型为T。
+     *
+     */
+    @Test
+    public void test27_14() {
+        // 数据准备
+        List<Staff> tmpList = Lists.newArrayList(
+                Staff.builder().name("张三").age(18).workStartTimestamp(123L).faceScore(99.9D).build(),
+                Staff.builder().name("李四").age(45).workStartTimestamp(456L).faceScore(66.6D).build(),
+                Staff.builder().name("王五").age(24).workStartTimestamp(789L).faceScore(33.3D).build()
+        );
+
+        /// -> summarizingInt示例
+        // 编写mapper，使用此mapper,能根据Stream<T>中的元素T，获取到对应的int值
+        ToIntFunction<Staff> intMapper = Staff::getAge;
+        // 采集数据，获得统计信息 对象
+        IntSummaryStatistics intResult = tmpList.parallelStream().collect(
+                Collectors.summarizingInt(intMapper)
+        );
+        // 输出: IntSummaryStatistics{count=3, sum=87, min=18, average=29.000000, max=45}
+        System.out.println(intResult);
+
+        /// -> summarizingLong示例
+        // 编写mapper，使用此mapper,能根据Stream<T>中的元素T，获取到对应的int值
+        ToLongFunction<Staff> longMapper = Staff::getWorkStartTimestamp;
+        // 采集数据，获得统计信息 对象
+        LongSummaryStatistics longResult = tmpList.parallelStream().collect(
+                Collectors.summarizingLong(longMapper)
+        );
+        // 输出: LongSummaryStatistics{count=3, sum=1368, min=123, average=456.000000, max=789}
+        System.out.println(longResult);
+
+        /// -> summarizingDouble示例
+        // 编写mapper，使用此mapper,能根据Stream<T>中的元素T，获取到对应的double值
+        ToDoubleFunction<Staff> doubleMapper = Staff::getFaceScore;
+        // 采集数据，获得统计信息 对象
+        DoubleSummaryStatistics doubleResult = tmpList.parallelStream().collect(
+                Collectors.summarizingDouble(doubleMapper)
+        );
+        // 输出: DoubleSummaryStatistics{count=3, sum=199.800000, min=33.300000, average=66.600000, max=99.900000}
+        System.out.println(doubleResult);
+    }
+
+    /**
+     * 对Stream<T>中的元素T“对应”的int/long/double值进行求和。
+     *
+     * 建议使用.mapToInt().sum()，而不使用.collect(Collectors.summingInt())
+     * 建议使用.mapToLong().sum()，而不使用.collect(Collectors.summingLong())
+     * 建议使用.mapToDouble().sum()，而不使用.collect(Collectors.summingDouble())
+     *
+     * 注:Stream的collect方法，签名为:
+     *       <R, A> R collect(Collector<? super T, A, R> collector)
+     *
+     * 注:Collectors的summarizingInt方法，签名为:
+     *        Collector<T, ?, Integer> summingInt(ToIntFunction<? super T> mapper)
+     *
+     * 注:Collectors的summarizingLong方法，签名为:
+     *        Collector<T, ?, LongSummaryStatistics> summarizingLong(ToLongFunction<? super T> mapper)
+     *
+     * 注:Collectors的summarizingDouble方法，签名为:
+     *        Collector<T, ?, DoubleSummaryStatistics> summarizingDouble(ToDoubleFunction<? super T> mapper)
+     *
+     * 注:当前stream类型为T。
+     *
+     */
+    @Test
+    @SuppressWarnings("all")
+    public void test27_15() {
+        // 数据准备
+        List<Staff> tmpList = Lists.newArrayList(
+                Staff.builder().name("张三").age(18).workStartTimestamp(123L).faceScore(99.9D).build(),
+                Staff.builder().name("李四").age(45).workStartTimestamp(456L).faceScore(66.6D).build(),
+                Staff.builder().name("王五").age(24).workStartTimestamp(789L).faceScore(33.3D).build()
+        );
+
+        /// -> summingInt示例
+        // 编写mapper，使用此mapper,能根据Stream<T>中的元素T，获取到对应的int值
+        ToIntFunction<Staff> intMapper = Staff::getAge;
+        // Integer求和
+        Integer intResult = tmpList.parallelStream().collect(
+                Collectors.summingInt(intMapper)
+        );
+        // 输出: 87
+        System.out.println(intResult);
+
+        /// -> summingLong示例
+        // 编写mapper，使用此mapper,能根据Stream<T>中的元素T，获取到对应的int值
+        ToLongFunction<Staff> longMapper = Staff::getWorkStartTimestamp;
+        // Long求和
+        Long longResult = tmpList.parallelStream().collect(
+                Collectors.summingLong(longMapper)
+        );
+        // 输出: 1368
+        System.out.println(longResult);
+
+        /// -> summingDouble示例
+        // 编写mapper，使用此mapper,能根据Stream<T>中的元素T，获取到对应的double值
+        ToDoubleFunction<Staff> doubleMapper = Staff::getFaceScore;
+        //  Double求和
+        Double doubleResult = tmpList.parallelStream().collect(
+                Collectors.summingDouble(doubleMapper)
+        );
+        // 输出: 199.8
+        System.out.println(doubleResult);
+    }
+
+    /**
+     * 将Stream<T>转换为一个集合List<T>。
+     * 注:实际上转换成的是ArrayList<T>
+     *
+     * 注:Stream的collect方法，签名为:
+     *       <R, A> R collect(Collector<? super T, A, R> collector)
+     *
+     * 注:Collectors的toList方法，签名为:
+     *        Collector<T, ?, List<T>> toList()
+     *
+     * 注:当前stream类型为T。
+     *
+     */
+    @Test
+    public void test27_16() {
+        // 数据准备
+        Stream<Staff> s = Stream.of(
+                Staff.builder().name("张三").age(18).workStartTimestamp(123L).faceScore(99.9D).build(),
+                Staff.builder().name("李四").age(45).workStartTimestamp(456L).faceScore(66.6D).build(),
+                Staff.builder().name("王五").age(24).workStartTimestamp(789L).faceScore(33.3D).build()
+        );
+        // 将String<T>转换为集合List<T>
+        List<Staff> list = s.parallel().collect(
+                Collectors.toList()
+        );
+        // 输出(为方便观察，本人简单整理了一下输出结果):
+        // [
+        //  Staff(name=张三, age=18, staffNo=null, faceScore=99.9, workStartTimestamp=123),
+        //  Staff(name=李四, age=45, staffNo=null, faceScore=66.6, workStartTimestamp=456),
+        //  Staff(name=王五, age=24, staffNo=null, faceScore=33.3, workStartTimestamp=789)
+        // ]
+        System.out.println(list);
+    }
+
+    /**
+     * 将Stream<T>转换为一个集合Set<T>。
+     * 注:实际上转换成的是HashSet<T>。
+     *
+     * 注:Stream的collect方法，签名为:
+     *       <R, A> R collect(Collector<? super T, A, R> collector)
+     *
+     * 注:Collectors的toSet方法，签名为:
+     *        Collector<T, ?, Set<T>> toSet()
+     *
+     * 注:当前stream类型为T。
+     *
+     */
+    @Test
+    public void test27_17() {
+        // 数据准备
+        Stream<Staff> s = Stream.of(
+                Staff.builder().name("张三").age(18).workStartTimestamp(123L).faceScore(99.9D).build(),
+                Staff.builder().name("李四").age(45).workStartTimestamp(456L).faceScore(66.6D).build(),
+                Staff.builder().name("王五").age(24).workStartTimestamp(789L).faceScore(33.3D).build()
+        );
+        // 将String<T>转换为集合List<T>
+        Set<Staff> set = s.parallel().collect(
+                Collectors.toSet()
+        );
+        // 输出(为方便观察，本人简单整理了一下输出结果):
+        // [
+        //  Staff(name=张三, age=18, staffNo=null, faceScore=99.9, workStartTimestamp=123),
+        //  Staff(name=李四, age=45, staffNo=null, faceScore=66.6, workStartTimestamp=456),
+        //  Staff(name=王五, age=24, staffNo=null, faceScore=33.3, workStartTimestamp=789)
+        // ]
+        System.out.println(set);
+    }
+
+    /**
+     * 将Stream<T>转换为一个(自定义类型的)集合。
+     *
+     * 注:Stream的collect方法，签名为:
+     *       <R, A> R collect(Collector<? super T, A, R> collector)
+     *
+     * 注:Collectors的toCollection方法，签名为:
+     *        Collector<T, ?, C> toCollection(Supplier<C> collectionFactory)
+     *
+     * 注:当前stream类型为T。
+     *
+     */
+    @Test
+    public void test27_18() {
+        // 数据准备
+        Stream<Staff> s = Stream.of(
+                Staff.builder().name("张三").age(18).workStartTimestamp(123L).faceScore(99.9D).build(),
+                Staff.builder().name("李四").age(45).workStartTimestamp(456L).faceScore(66.6D).build(),
+                Staff.builder().name("王五").age(24).workStartTimestamp(789L).faceScore(33.3D).build()
+        );
+
+        // 先实现Supplier<C>, Supplier<C>会提供一种集合容器。
+        Supplier<LinkedList<Staff>> collectionFactory = LinkedList::new;
+
+        // 将String<T>转换为集合LinkedList<T>
+        LinkedList<Staff> linkedList = s.parallel().collect(
+                Collectors.toCollection(collectionFactory)
+        );
+        // 输出(为方便观察，本人简单整理了一下输出结果):
+        // [
+        //  Staff(name=张三, age=18, staffNo=null, faceScore=99.9, workStartTimestamp=123),
+        //  Staff(name=李四, age=45, staffNo=null, faceScore=66.6, workStartTimestamp=456),
+        //  Staff(name=王五, age=24, staffNo=null, faceScore=33.3, workStartTimestamp=789)
+        // ]
+        System.out.println(linkedList);
+    }
+
+    /**
+     * 将Stream<T>转换为一个Map, 在转换时若发现重复的key,那么会抛出异常。
+     *
+     * 提示:这里示例的是toMap方法(转换为线程非安全的Map),对应的(转换为线程
+     *      安全的ConcurrentMap的)toConcurrentMap方法用法几乎是一样的。
+     *
+     *
+     * 注:Stream的collect方法，签名为:
+     *       <R, A> R collect(Collector<? super T, A, R> collector)
+     *
+     * 注:Collectors的toMap方法，签名为:
+     *        Collector<T,?,Map<K,U>> toMap(Function<? super T,? extends K> keyMapper, Function<? super T,? extends U> valueMapper)
+     *        追注:此方式的toMap,要求key不能有重复的，否者会出错
+     *            java.lang.IllegalStateException: java.lang.IllegalStateException: Duplicate key...
+     *        追注:此方法内部调用的其实是:toMap(keyMapper, valueMapper, throwingMerger(), HashMap::new);
+     *
+     * 注:Collectors的toConcurrentMap方法，签名为:
+     *        Collector<T,?,ConcurrentMap<K,U>> toConcurrentMap(Function<? super T,? extends K> keyMapper, Function<? super T,? extends U> valueMapper)
+     *        追注:用法与本示例几乎一样，不过toConcurrentMap是线程安全的。
+     *        追注:此方式的toMap,要求key不能有重复的，否者会出错
+     *            java.lang.IllegalStateException: java.lang.IllegalStateException: Duplicate key...
+     *        追注:此方法内部调用的其实是:toConcurrentMap(keyMapper, valueMapper, throwingMerger(), ConcurrentHashMap::new)
+     *
+     * 注:当前stream类型为T。
+     *
+     */
+    @Test
+    public void test27_19() {
+        // 数据准备
+        Stream<Staff> s = Stream.of(
+                Staff.builder().name("张三").age(18).workStartTimestamp(123L).faceScore(99.9D).build(),
+                Staff.builder().name("张三").age(18).workStartTimestamp(123L).faceScore(99.9D).build(),
+                Staff.builder().name("李四").age(45).workStartTimestamp(456L).faceScore(66.6D).build(),
+                Staff.builder().name("王五").age(24).workStartTimestamp(789L).faceScore(33.3D).build()
+        );
+
+        // 编写一个keyMapper，用于 根据元素T获取对应的key
+        Function<Staff, String> keyMapper = Staff::getName;
+
+        // 编写一个valueMapper，用于 根据元素T获取对应的value
+        Function<Staff, Integer> valueMapper = Staff::getAge;
+
+        // 将Stream<T>转换为Map
+        Map<String, Integer> resultMap = s.parallel().collect(
+                Collectors.toMap(keyMapper, valueMapper)
+        );
+
+        // 输出: {李四=45, 张三=18, 王五=24}
+        System.out.println(resultMap);
+    }
+
+    /**
+     * 将Stream<T>转换为一个Map, 在转换时若发现重复的key,那么会根据mergeFunction来决定该key的value是多少。
+     *
+     * 提示:这里示例的是toMap方法(转换为线程非安全的Map),对应的(转换为线程
+     *      安全的ConcurrentMap的)toConcurrentMap方法用法几乎是一样的。
+     *
+     *
+     * 注:Stream的collect方法，签名为:
+     *       <R, A> R collect(Collector<? super T, A, R> collector)
+     *
+     * 注:Collectors的toMap方法，签名为:
+     *        Collector<T,?,Map<K,U>> toMap(Function<? super T,? extends K> keyMapper, Function<? super T,? extends U> valueMapper, BinaryOperator<U> mergeFunction)
+     *        追注:此方法内部调用的其实是:toMap(keyMapper, valueMapper, mergeFunction, HashMap::new)
+     *
+     * 注:Collectors的toConcurrentMap方法，签名为:
+     *        Collector<T,?,ConcurrentMap<K,U>> toConcurrentMap(Function<? super T,? extends K> keyMapper, Function<? super T,? extends U> valueMapper, BinaryOperator<U> mergeFunction)
+     *        追注:用法与本示例几乎一样，不过toConcurrentMap是线程安全的。
+     *        追注:此方法内部调用的其实是:toConcurrentMap(keyMapper, valueMapper, mergeFunction, ConcurrentHashMap::new)
+     *
+     * 注:当前stream类型为T。
+     *
+     */
+    @Test
+    public void test27_20() {
+        // 数据准备
+        Stream<Staff> s = Stream.of(
+                Staff.builder().name("张三").age(18).workStartTimestamp(123L).faceScore(99.9D).build(),
+                Staff.builder().name("张三").age(100).workStartTimestamp(123L).faceScore(99.9D).build(),
+                Staff.builder().name("李四").age(45).workStartTimestamp(456L).faceScore(66.6D).build(),
+                Staff.builder().name("王五").age(24).workStartTimestamp(789L).faceScore(33.3D).build()
+        );
+
+        // 编写一个keyMapper，用于 根据元素T获取对应的key
+        Function<Staff, String> keyMapper = Staff::getName;
+
+        // 编写一个valueMapper，用于 根据元素T获取对应的value
+        Function<Staff, Staff> valueMapper = Function.identity();
+
+        // 编写一个mergeFunction，用于 处理 key冲突时的逻辑
+        BinaryOperator<Staff> mergeFunction = (Staff preStaff, Staff nextValue) -> {
+            // 输出: oldStaff的name是[张三]， age是[18]
+            System.err.println("preStaff的name是[" + preStaff.getName() + "]， age是[" + preStaff.getAge() + "]");
+            // 输出: oldStaff的name是[张三]， age是[100]
+            System.err.println("nextValue的name是[" + nextValue.getName() + "]， age是[" + nextValue.getAge() + "]");
+            return nextValue;
+        };
+
+        // 将Stream<T>转换为Map
+        Map<String, Staff> resultMap = s.parallel().collect(
+                Collectors.toMap(keyMapper, valueMapper, mergeFunction)
+        );
+
+        // 输出(为方便观察，本人简单整理了一下输出结果):
+        // {
+        //  李四=Staff(name=李四, age=45, staffNo=null, faceScore=66.6, workStartTimestamp=456),
+        //  张三=Staff(name=张三, age=100, staffNo=null, faceScore=99.9, workStartTimestamp=123),
+        //  王五=Staff(name=王五, age=24, staffNo=null, faceScore=33.3, workStartTimestamp=789)
+        // }
+        System.out.println(resultMap);
+    }
+
+    /**
+     * 将Stream<T>转换为一个(由mapSupplier定义提供的)Map, 在转换时若发现重复的key,
+     * 那么会根据mergeFunction来决定该key的value是多少。
+     *
+     * 提示:这里示例的是toMap方法(转换为线程非安全的Map),对应的(转换为线程
+     *      安全的ConcurrentMap的)toConcurrentMap方法用法几乎是一样的。
+     *
+     * 注:Stream的collect方法，签名为:
+     *       <R, A> R collect(Collector<? super T, A, R> collector)
+     *
+     * 注:Collectors的toMap方法，签名为:
+     *        Collector<T,?,M> toMap(Function<? super T,? extends K> keyMapper, Function<? super T,? extends U> valueMapper, BinaryOperator<U> mergeFunction, Supplier<M> mapSupplier)
+     *
+     * 注:Collectors的toConcurrentMap方法，签名为:
+     *        Collector<T,?,M> toConcurrentMap(Function<? super T,? extends K> keyMapper, Function<? super T,? extends U> valueMapper, BinaryOperator<U> mergeFunction, Supplier<M> mapSupplier)
+     *        追注:用法与本示例几乎一样，不过toConcurrentMap是线程安全的。
+     *
+     * 注:当前stream类型为T。
+     *
+     */
+    @Test
+    public void test27_21() {
+        // 数据准备
+        Stream<Staff> s = Stream.of(
+                Staff.builder().name("张三").age(18).workStartTimestamp(123L).faceScore(99.9D).build(),
+                Staff.builder().name("张三").age(100).workStartTimestamp(123L).faceScore(99.9D).build(),
+                Staff.builder().name("李四").age(45).workStartTimestamp(456L).faceScore(66.6D).build(),
+                Staff.builder().name("王五").age(24).workStartTimestamp(789L).faceScore(33.3D).build()
+        );
+
+        // 编写一个keyMapper，用于 根据元素T获取对应的key
+        Function<Staff, String> keyMapper = Staff::getName;
+
+        // 编写一个valueMapper，用于 根据元素T获取对应的value
+        Function<Staff, Integer> valueMapper = Staff::getAge;
+
+        // 编写一个mergeFunction，用于 处理 key冲突时的逻辑
+        BinaryOperator<Integer> mergeFunction = (Integer preValue, Integer nextValue) -> {
+            // 输出: preValue是: 18
+            System.err.println("preValue是: " + preValue);
+            // 输出: nextValue是: 100
+            System.err.println("nextValue是: " + nextValue);
+            return nextValue;
+        };
+
+        // Map容器提供者。 .collect(Collectors.toMap())返回的Map, 由此mapSupplier进行提供。
+        Supplier<LinkedHashMap<String, Integer>> mapSupplier = LinkedHashMap::new;
+
+        // 将Stream<T>转换为Map
+        LinkedHashMap<String, Integer> resultMap = s.parallel().collect(
+                Collectors.toMap(keyMapper, valueMapper, mergeFunction, mapSupplier)
+        );
+
+        // 输出: {张三=100, 李四=45, 王五=24}
+        System.out.println(resultMap);
+    }
+
+
+
+    /// --------------------------------------------------------------- IntStream、LongStream、DoubleStream
+
+    /**
+     * 声明: IntStream与LongStream与DoubleStream的用法几乎一模一样，且很多方法与Stream中一样，
+     *       因此，下面以IntStream为例，只示例一些IntStream中有而Stream中没有的方法 或 示例一些
+     *       常用的方法
+     */
+    @Test
+    public void test28() {
+        /*
+         * --------------------------------------------- 示例 asDoubleStream()
+         * 方法签名: DoubleStream asDoubleStream()
+         * 方法说明: 将当前流转换为 DoubleStream
+         */
+        IntStream s1 = IntStream.of(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
+        DoubleStream doubleStream = s1.asDoubleStream();
+        // 输出: 0.0		1.0		2.0		3.0		4.0		5.0		6.0		7.0		8.0		9.0
+        doubleStream.forEachOrdered(x -> System.out.print(x + "\t\t"));
+
+        /*
+         * --------------------------------------------- 示例 asLongStream()
+         * 方法签名: LongStream asLongStream()
+         * 方法说明: 将当前流转换为 LongStream
+         */
+        IntStream s2 = IntStream.of(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
+        LongStream longStream = s2.asLongStream();
+        // 换个行，便于观察
+        System.out.println();
+        // 输出: 0		1		2		3		4		5		6		7		8		9
+        longStream.forEachOrdered(x -> System.out.print(x + "\t\t"));
+
+        /*
+         * --------------------------------------------- 示例 average()
+         * 方法签名: OptionalDouble average()
+         * 方法说明: 求平均值
+         */
+        IntStream s3 = IntStream.of(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
+        OptionalDouble optionalDouble = s3.average();
+        // 换个行，便于观察
+        System.out.println();
+        // 输出: 4.5
+        optionalDouble.ifPresent(System.out::print);
+
+        /*
+         * --------------------------------------------- 示例 boxed()
+         * 方法签名: Stream<Integer> boxed()
+         * 方法说明: 将IntStream中的int转换为包装类Integer,得到Stream<Integer>
+         */
+        IntStream s4 = IntStream.of(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
+        Stream<Integer> integerStream = s4.boxed();
+        // 换个行，便于观察
+        System.out.println();
+        // 输出: 0		1		2		3		4		5		6		7		8		9
+        integerStream.forEachOrdered(x -> System.out.print(x + "\t\t"));
+
+        /*
+         * --------------------------------------------- 示例 range()
+         * 方法签名: static IntStream range(int startInclusive, int endExclusive)
+         * 方法说明: 抽取给定范围(startInclusive到endExclusive)内的值，作为IntStream的元素。
+         *          注:包含startInclusive， 不包含endExclusive。
+         *          注:步径长度为1
+         */
+        IntStream rangeStream = IntStream.range(0, 6);
+        // 换个行，便于观察
+        System.out.println();
+        // 输出: 0		1		2		3		4		5
+        rangeStream.forEachOrdered(x -> System.out.print(x + "\t\t"));
+
+        /*
+         * --------------------------------------------- 示例 rangeClosed()
+         * 方法签名: static IntStream rangeClosed(int startInclusive, int endInclusive)
+         * 方法说明: 抽取给定范围(startInclusive到endInclusive)内的值，作为IntStream的元素。
+         *          注:既包含startInclusive， 又包含endInclusive。
+         *          注:步径长度为1
+         */
+        IntStream rangeClosedStream = IntStream.rangeClosed(0, 6);
+        // 换个行，便于观察
+        System.out.println();
+        // 输出: 0		1		2		3		4		5		6
+        rangeClosedStream.forEachOrdered(x -> System.out.print(x + "\t\t"));
+
+        /*
+         * --------------------------------------------- 示例 sum()
+         * 方法签名: int sum()
+         * 方法说明: 求和
+         */
+        IntStream s5 = IntStream.of(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
+        int sumValue = s5.sum();
+        // 换个行，便于观察
+        System.out.println();
+        // 输出: 45
+        System.out.println(sumValue);
+
+        /*
+         * --------------------------------------------- 示例 toArray()
+         * 方法签名: int[] toArray()
+         * 方法说明: 将IntStream转换为数组
+         */
+        IntStream s6 = IntStream.of(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
+        int[] array = s6.toArray();
+        // 换个行，便于观察
+        System.out.println();
+        // 输出: 45
+        System.out.println(Arrays.toString(array));
+
+        /*
+         * --------------------------------------------- 示例 summaryStatistics()
+         * 方法签名: IntSummaryStatistics summaryStatistics()
+         * 方法说明: 根据IntStream获得统计对象， 通过该统计对象可以获得具
+         *          体的统计信息(如:最大值、最小值、平均值、总和、数量)
+         */
+        IntStream s7 = IntStream.of(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
+        IntSummaryStatistics intSummaryStatistics = s7.summaryStatistics();
+        // 换个行，便于观察
+        System.out.println();
+        // 输出: IntSummaryStatistics{count=10, sum=45, min=0, average=4.500000, max=9}
+        System.out.println(intSummaryStatistics);
+    }
+
+    /// --------------------------------------------------------------- 相关简单拓展
+
+    /**
+     * 利用Stream, 获取文件内容、处理文件内容
+     */
+    @Test
+    public void other1() throws IOException {
+        // 获取文件数据行的stream
+        Path path = Paths.get("C:\\Users\\JustryDeng\\Desktop\\abc.txt");
+        Stream<String> lineStream = Files.lines(path, StandardCharsets.UTF_8).parallel();
+        // 注意: 因为这里用的是并行流，所以这里map中的式子，一定要保证线程安全
+        lineStream.map(x -> {
+            x = x.replace("夹杂中文", "【夹杂JustryDeng中文】");
+            return x;
+        }).forEachOrdered(System.out::println);
+    }
 
 }
