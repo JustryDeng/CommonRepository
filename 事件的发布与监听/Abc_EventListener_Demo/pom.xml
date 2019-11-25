@@ -48,18 +48,11 @@
             <artifactId>spring-boot-starter-log4j2</artifactId>
         </dependency>
 
-
         <!-- 引入lombok快速开发 -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.18.10</version>
-            <scope>test</scope>
         </dependency>
 
     </dependencies>
