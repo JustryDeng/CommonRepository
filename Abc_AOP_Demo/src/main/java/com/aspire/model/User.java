@@ -1,5 +1,7 @@
 package com.aspire.model;
 
+import lombok.Data;
+
 import java.io.Serializable;
 
 /**
@@ -8,6 +10,7 @@ import java.io.Serializable;
  * @author JustryDeng
  * @date 2018/12/17 19:43
  */
+@Data
 public class User implements Serializable {
 
 
@@ -31,62 +34,4 @@ public class User implements Serializable {
     /** 帅气值 */
     private Integer handsomeValue;
 
-    public static long getSerialVersionUID() {
-        return serialVersionUID;
-    }
-
-    public String getCardId() {
-        return cardId;
-    }
-
-    public void setCardId(String cardId) {
-        this.cardId = cardId;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Integer getAge() {
-        return age;
-    }
-
-    public void setAge(Integer age) {
-        this.age = age;
-    }
-
-    public String getGender() {
-        return gender;
-    }
-
-    public void setGender(String gender) {
-        this.gender = gender;
-    }
-
-    public String getMotto() {
-        return motto;
-    }
-
-    public void setMotto(String motto) {
-        this.motto = motto;
-    }
-
-    public Integer getHandsomeValue() {
-        return handsomeValue;
-    }
-
-    public void setHandsomeValue(Integer handsomeValue) {
-        this.handsomeValue = handsomeValue;
-    }
-
-    @Override
-    public String toString() {
-        return "User{cardId='" + cardId + "', name='" + name + "', age="
-                    + age + ", gender='" + gender + "', motto='" + motto
-                        + "', handsomeValue='" + handsomeValue + "'}";
-    }
 }

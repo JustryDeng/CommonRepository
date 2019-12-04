@@ -19,7 +19,6 @@ import java.util.Map;
 @RestController
 public class AopController {
 
-    @AdviceOne
     @RequestMapping(value = "/test", method = {RequestMethod.POST})
     public Map<String, Object> test(@RequestBody User user) {
         String threadName = Thread.currentThread().getName();

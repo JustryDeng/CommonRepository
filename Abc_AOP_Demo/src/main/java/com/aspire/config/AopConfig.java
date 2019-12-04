@@ -5,6 +5,7 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.*;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.Arrays;
 import java.util.Map;
 
 
@@ -30,51 +31,60 @@ import java.util.Map;
 @Configuration
 public class AopConfig {
 
+
+
     /**
      * 将表达式【* com.aspire.controller.AopController.*(..))】所匹配的所有方法标记为切点，
-     * 切点名为 excudeAdvice()
+     * 切点名为 executeAdvice()
      *
      * 注:execution里的表达式所涉及到的类名(除了基本类以外)，其它的要用全类名;干脆不管是不
      *    是基础类，都推荐使用全类名
+     * 注:如果有多个表达式进行交集或者并集的话，可以使用&&、||、or，示例:
+     * @Pointcut(
+     *  "execution(public com.szlzcl.laodeduo.common.CommonResponse com.szlzcl.laodeduo.*.controller..*(..)) "
+     *      + " || "
+     *          + "execution(public com.szlzcl.laodeduo.common.CommonResponse com.szlzcl.laodeduo.config.common..*(..))"
+     *  )
      *
      * @author JustryDeng
      * @date 2018/12/18 13:43
      */
-    // @Pointcut("execution(* com.aspire.controller.AopController.*(..))")
-    /**
+     @Pointcut("execution(* com.aspire.controller.AopController.*(..))")
+     /**
      * 使用注解来定位AOP作为节点的方法们
      */
-    @Pointcut("@annotation(com.aspire.annotation.AdviceOne)")
-    public void excudeAdvice() {
+    // @Pointcut("@annotation(com.aspire.annotation.AdviceOne)")
+    public void executeAdvice() {
     }
 
     /**
-     * 切点excudeAdvice()的前置增强方法
+     * 切点executeAdvice()的前置增强方法
      *
      * @author JustryDeng
      * @date 2018/12/18 13:47
      */
-    @Before(value = "excudeAdvice()")
+    @Before(value = "executeAdvice()")
     public void beforeAdvice(JoinPoint joinPoint) {
         Object[] paramArray = joinPoint.getArgs();
         String threadName = Thread.currentThread().getName();
-        System.out.println(threadName + " -> beforeAdvice获取到了被增强方法的参数了，为:" + paramArray);
+        System.out.println(threadName + " -> beforeAdvice获取到了被增强方法的参数了，为:"
+                + Arrays.toString(paramArray));
     }
 
     /**
-     * 切点excudeAdvice()的后增强方法
+     * 切点executeAdvice()的后增强方法
      *
      * @author JustryDeng
      * @date 2018/12/18 13:47
      */
-    @After("excudeAdvice()")
+    @After("executeAdvice()")
     public void afterAdvice() {
         String threadName = Thread.currentThread().getName();
         System.out.println(threadName + " -> 后置增强afterAdvice执行了");
     }
 
     /**
-     * 切点excudeAdvice()的后增强方法
+     * 切点executeAdvice()的后增强方法
      *
      * 注:当被增强方法 或  afterAdvice正常执行时，才会走此方法
      * 注: returning指明获取到的(环绕增强返回的)返回值
@@ -82,7 +92,7 @@ public class AopConfig {
      * @author JustryDeng
      * @date 2018/12/18 13:47
      */
-    @AfterReturning(value = "excudeAdvice()", returning = "map")
+    @AfterReturning(value = "executeAdvice()", returning = "map")
     public void afterReturningAdvice(Map<String, Object> map) {
         String threadName = Thread.currentThread().getName();
         System.out.println(threadName + " -> afterReturningAdvice获得了返回结果 map -> " + map);
@@ -96,7 +106,7 @@ public class AopConfig {
      * @author JustryDeng
      * @date 2018/12/18 13:57
      */
-    @AfterThrowing(value = "excudeAdvice()", throwing ="ex")
+    @AfterThrowing(value = "executeAdvice()", throwing ="ex")
     public void afterThrowingAdvice(Exception ex) {
         System.out.println("AfterThrowing捕获到了 --->" + ex);
     }
@@ -107,7 +117,7 @@ public class AopConfig {
      *  所以在绝大多数时候，我们都直接返回thisJoinPoint.proceed();的返回值；
      *  如果此方法返回null,那么@AfterReturning方法获取到的返回值 就会是null
      */
-    @Around("excudeAdvice()")
+    @Around("executeAdvice()")
     public Object aroundAdvice(ProceedingJoinPoint thisJoinPoint) {
         String threadName = Thread.currentThread().getName();
         Object obj = null;
