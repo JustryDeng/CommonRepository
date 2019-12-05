@@ -116,19 +116,19 @@ public class AopConfig {
      *  环绕增强 会在 被增强方法执行完毕后  第一个执行，
      *  所以在绝大多数时候，我们都直接返回thisJoinPoint.proceed();的返回值；
      *  如果此方法返回null,那么@AfterReturning方法获取到的返回值 就会是null
+     *
+     * @throws Throwable 当目标方法抛出异常时
+     *
+     * @author JustryDeng
+     * @date 2018/12/18 13:57
      */
     @Around("executeAdvice()")
-    public Object aroundAdvice(ProceedingJoinPoint thisJoinPoint) {
+    public Object aroundAdvice(ProceedingJoinPoint thisJoinPoint) throws Throwable {
         String threadName = Thread.currentThread().getName();
-        Object obj = null;
         System.err.println(threadName + " -> 环绕增强aroundAdvice --> before proceed()执行了");
-        try {
             // 执行被增强方法，并获取到返回值
             // 类似于 过滤器的chain.doFilter(req,resp)方法
-            obj = thisJoinPoint.proceed();
-        } catch (Throwable e) {
-            e.printStackTrace();
-        }
+        Object obj = thisJoinPoint.proceed();
         System.err.println(threadName + " -> 环绕增强aroundAdvice --> after proceed()执行了");
         return obj;
     }
