@@ -69,7 +69,7 @@
 
 	<Loggers>
 		<!-- 设置只记录info以及更高级别的日志 -->
-		<Logger name="com" level="info">
+		<Logger name="com" level="debug">
 				<AppenderRef ref="rollingFile" />
 		</Logger>
 	</Loggers>
