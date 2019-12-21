@@ -35,7 +35,7 @@ public @interface RecordParameters {
         INFO,
 
         /** warn */
-        WARN;
+        WARN
     }
 
     /**
@@ -50,6 +50,6 @@ public @interface RecordParameters {
         OUTPUT,
 
         /** 既记录入参，也记录出参 */
-        INPUT_OUTPUT;
+        INPUT_OUTPUT
     }
 }
