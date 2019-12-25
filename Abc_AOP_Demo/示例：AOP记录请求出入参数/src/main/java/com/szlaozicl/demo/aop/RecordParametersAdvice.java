@@ -10,6 +10,7 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.LocalVariableTableParameterNameDiscoverer;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -25,6 +26,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @date 2019/12/4 13:57
  */
 @Slf4j
+@Order
 @Aspect
 @Configuration
 public class RecordParametersAdvice {
@@ -86,46 +88,39 @@ public class RecordParametersAdvice {
                 || annotation.strategy() == RecordParameters.Strategy.INPUT_OUTPUT;
 
         if (shouldRecordInputParams) {
-            aopSupport.log(annotation.logLevel(), "【the way in】 Class#Method → {}#{}",
-                    targetClazz.getName(), targetMethod.getName());
+            aopSupport.log(annotation.logLevel(), "【the way in】 Class#Method → {}#{}", targetClazz.getName(),
+                    targetMethod.getName());
             /// log.info("【the way in】 Class#Method → {}#{}", targetClazz.getName(), targetMethod.getName());
-        }
-
-        Object[] parameterValues = thisJoinPoint.getArgs();
-        if (parameterValues != null && parameterValues.length > 0) {
-            String[] parameterNames = PARAMETER_NAME_DISCOVER.getParameterNames(targetMethod);
-            if (parameterNames == null) {
-                throw new RuntimeException("parameterNames must not be null!");
-            }
-            StringBuilder sb = new StringBuilder(8);
-            int iterationTimes = parameterValues.length;
-            for (int i = 0; i < iterationTimes; i++) {
-                sb.append("\t").append(parameterNames[i]).append(" => ")
-                        .append(aopSupport.jsonPretty(parameterValues[i]));
-                if (i < iterationTimes - 1) {
-                    sb.append("\n");
+            Object[] parameterValues = thisJoinPoint.getArgs();
+            if (parameterValues != null && parameterValues.length > 0) {
+                String[] parameterNames = PARAMETER_NAME_DISCOVER.getParameterNames(targetMethod);
+                if (parameterNames == null) {
+                    throw new RuntimeException("parameterNames must not be null!");
                 }
-            }
-            if (shouldRecordInputParams) {
-                aopSupport.log(annotation.logLevel(), "【the way in】 Param ↓ \n{}{}",
-                        sb.toString(), emptyStr);
+                StringBuilder sb = new StringBuilder(8);
+                int iterationTimes = parameterValues.length;
+                for (int i = 0; i < iterationTimes; i++) {
+                    sb.append("\t").append(parameterNames[i]).append(" => ").append(aopSupport.jsonPretty(parameterValues[i]));
+                    if (i < iterationTimes - 1) {
+                        sb.append("\n");
+                    }
+                }
+                aopSupport.log(annotation.logLevel(), "【the way in】 Param ↓ \n{}{}", sb.toString(), emptyStr);
                 /// log.info("【the way in】 Param ↓ \n{}", sb.toString());
             }
         }
 
         Object obj = thisJoinPoint.proceed();
-        Class<?> returnClass = targetMethod.getReturnType();
         if (shouldRecordOutputParams) {
-            aopSupport.log(annotation.logLevel(), "【the way out】 ReturnType → {}{}",
-                    targetMethod.getReturnType(), emptyStr);
+            Class<?> returnClass = targetMethod.getReturnType();
+            aopSupport.log(annotation.logLevel(), "【the way out】 ReturnType → {}{}", targetMethod.getReturnType(),
+                    emptyStr);
             /// log.info("【the way out】 ReturnType → {}", targetMethod.getReturnType());
-        }
-        if (VOID_STRING.equals(returnClass.getName())) {
-            return obj;
-        }
-        if (shouldRecordOutputParams) {
-            aopSupport.log(annotation.logLevel(), "【the way out】 ReturnResult → {}{}",
-                    aopSupport.jsonPretty(obj), emptyStr);
+            if (VOID_STRING.equals(returnClass.getName())) {
+                return obj;
+            }
+            aopSupport.log(annotation.logLevel(), "【the way out】 ReturnResult → {}{}", aopSupport.jsonPretty(obj),
+                    emptyStr);
             /// log.info("【the way out】 ReturnResult → {}", aopSupport.jsonPretty(obj));
         }
         return obj;
@@ -150,12 +145,6 @@ public class RecordParametersAdvice {
             methodMap.put(debugStr, debugMethod);
             methodMap.put(infoStr, infoMethod);
             methodMap.put(warnStr, warnMethod);
-        }
-
-        public static void main(String[] args) {
-            System.out.println(
-                    RecordParameters.LogLevel.DEBUG.name().toLowerCase()
-            );
         }
 
         private void log(RecordParameters.LogLevel logLevel, String formatter, Object firstMarkerValue,

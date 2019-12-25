@@ -20,8 +20,8 @@ import java.util.List;
  */
 @Slf4j
 @RestController
-@SuppressWarnings("unused")
 @RecordParameters
+@SuppressWarnings("unused")
 public class DemoController {
 
     private static SecureRandom RANDOM = new SecureRandom();

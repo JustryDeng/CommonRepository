@@ -26,23 +26,23 @@ public class DemoOneController {
 
     private static SecureRandom RANDOM = new SecureRandom();
 
-    @GetMapping("/insert")
+    @GetMapping("/insert1")
     public Integer insertDemo(String name, Integer age, String motto, String hobby) {
         return RANDOM.nextInt(10);
     }
 
-    @GetMapping("/delete")
+    @GetMapping("/delete1")
     @IgnoreRecordParameters
     public Boolean deleteDemo(Integer id) {
         return RANDOM.nextBoolean();
     }
 
-    @GetMapping("/update")
+    @GetMapping("/update1")
     public Boolean updateDemo(String hobby, Integer id) {
         return RANDOM.nextBoolean();
     }
 
-    @GetMapping("/select")
+    @GetMapping("/select1")
     @IgnoreRecordParameters
     public List<EmployeePO> selectDemo(String namePrefix) {
         List<EmployeePO> list = new ArrayList<>(2);
@@ -51,17 +51,17 @@ public class DemoOneController {
         return list;
     }
 
-    @GetMapping("/num")
+    @GetMapping("/num1")
     public Integer[] numTest(Integer... num) {
         return num;
     }
 
-    @GetMapping("/no/args")
+    @GetMapping("/no/args1")
     public String noArgs() {
         return "/no/args";
     }
 
-    @GetMapping("/no/return")
+    @GetMapping("/no/return1")
     public void noReturn() {
     }
 }
