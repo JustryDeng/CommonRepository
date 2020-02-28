@@ -14,7 +14,6 @@ import org.springframework.boot.test.context.SpringBootTest;
  */
 @Slf4j
 @SpringBootTest
-@RequiredArgsConstructor
 class GuavaRetryTests {
 
     @Test
