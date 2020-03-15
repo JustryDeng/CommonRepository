@@ -1,0 +1,5 @@
+spring:
+    redis:
+        host: ...
+        port: 6379
+        password: ds123
