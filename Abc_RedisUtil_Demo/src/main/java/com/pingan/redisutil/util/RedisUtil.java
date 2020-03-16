@@ -3016,22 +3016,7 @@ public class RedisUtil implements ApplicationContextAware {
 		 */
 		public static boolean getLockUntilTimeout(final String key, final String value,
 												  final long retryTimeoutLimit) {
-
-			long startTime = Instant.now().toEpochMilli();
-			long now;
-			do {
-				try {
-					boolean alreadyGotLock = getLockUntilTimeout(key, value, DEFAULT_LOCK_TIMEOUT, DEFAULT_TIMEOUT_UNIT, retryTimeoutLimit);
-					if (alreadyGotLock) {
-						return true;
-					}
-				} catch (Exception e) {
-					log.warn("getLockUntilTimeout(...) => try to get lock failure! e.getMessage -> {}",
-							e.getMessage());
-				}
-				now = Instant.now().toEpochMilli();
-			} while (startTime + retryTimeoutLimit < now);
-			return false;
+			return getLockUntilTimeout(key, value, DEFAULT_LOCK_TIMEOUT, DEFAULT_TIMEOUT_UNIT, retryTimeoutLimit);
 		}
 
 		/**
