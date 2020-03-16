@@ -3202,7 +3202,7 @@ public class RedisUtil implements ApplicationContextAware {
 	}
 
 	/**
-	 * 提供一些础功能支持
+	 * 提供一些基础功能支持
 	 *
 	 * @author JustryDeng
 	 * @date 2020/3/16 0:48:14
