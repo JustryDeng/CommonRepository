@@ -1,0 +1,25 @@
+# -------------------------------------- 日志相关
+logging:
+  level:
+    root: info
+    com:
+      baomidou.mybatisplus: debug
+      pingan.springsecurity.mapper: debug
+
+# -------------------------------------- 数据库相关
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/spring_security_db?characterEncoding=utf8&serverTimezone=GMT%2B8&useSSL=false
+    username: root
+    password: dengshuai
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      auto-commit: true
+      connection-test-query: SELECT 1
+      connection-timeout: 30000
+      idle-timeout: 180000
+      max-lifetime: 1800000
+      maximum-pool-size: 10
+      minimum-idle: 5
+      pool-name: JustryDeng-HikariCP
