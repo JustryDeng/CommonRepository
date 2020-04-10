@@ -41,9 +41,9 @@ public class AopConfig {
      *    是基础类，都推荐使用全类名
      * 注:如果有多个表达式进行交集或者并集的话，可以使用&&、||、or，示例:
      * @Pointcut(
-     *  "execution(public com.szlzcl.laodeduo.common.CommonResponse com.szlzcl.laodeduo.*.controller..*(..)) "
+     *  "execution(* com.szlzcl.laodeduo.common.CommonResponse com.szlzcl.laodeduo.*.controller..*(..)) "
      *      + " || "
-     *          + "execution(public com.szlzcl.laodeduo.common.CommonResponse com.szlzcl.laodeduo.config.common..*(..))"
+     *          + "execution(* com.szlzcl.laodeduo.common.CommonResponse com.szlzcl.laodeduo.config.common..*(..))"
      *  )
      *
      * @author JustryDeng
