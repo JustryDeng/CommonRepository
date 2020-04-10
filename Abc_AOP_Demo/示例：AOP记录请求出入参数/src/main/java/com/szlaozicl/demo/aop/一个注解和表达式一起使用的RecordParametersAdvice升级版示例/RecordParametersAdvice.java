@@ -40,10 +40,10 @@ public class RecordParametersAdvice {
     private static final LocalVariableTableParameterNameDiscoverer PARAMETER_NAME_DISCOVER = new LocalVariableTableParameterNameDiscoverer();
 
     /** 无返回值 */
-    private static final String VOID_STRING = void.class.getName();
+    private static final String VOID_STR = void.class.getName();
 
     /** controller类后缀 */
-    private static final String CONTROLLER_STRING = "Controller";
+    private static final String CONTROLLER_STR = "Controller";
 
     private static final String EMPTY_STR = "";
 
@@ -93,7 +93,7 @@ public class RecordParametersAdvice {
         if (annotation == null) {
             annotation = targetClazz.getAnnotation(RecordParameters.class);
             // 如果是通过execution触发的，那么annotation可能为null, 那么给其赋予默认值即可
-            if (annotation == null && clazzName.endsWith(CONTROLLER_STRING) ) {
+            if (annotation == null && clazzName.endsWith(CONTROLLER_STR) ) {
                 annotation = (RecordParameters) AnnotationUtils.getDefaultValue(RecordParameters.class);
             }
         }
@@ -129,7 +129,7 @@ public class RecordParametersAdvice {
     }
 
     /**
-     * 切面日志后处理
+     * 切面日志前处理
      *
      * @param logLevel
      *            日志级别
@@ -143,7 +143,7 @@ public class RecordParametersAdvice {
      */
     private void preHandel(RecordParameters.LogLevel logLevel, Method targetMethod,
                            ProceedingJoinPoint pjp, String clazzName) {
-        if (clazzName.endsWith(CONTROLLER_STRING)) {
+        if (clazzName.endsWith(CONTROLLER_STR)) {
             aopSupport.log(logLevel,
                     " \n【the way in】 request-path【" + aopSupport.getRequestPath() + "】Class#Method → {}#{}",
                     clazzName, targetMethod.getName());
@@ -188,7 +188,7 @@ public class RecordParametersAdvice {
         aopSupport.log(logLevel, "【the way out】 ReturnType → {}{}", targetMethod.getReturnType(),
                 EMPTY_STR);
         /// log.info("【the way out】 ReturnType → {}", targetMethod.getReturnType());
-        if (VOID_STRING.equals(returnClass.getName())) {
+        if (VOID_STR.equals(returnClass.getName())) {
             return true;
         }
         aopSupport.log(logLevel, "【the way out】 ReturnResult → {}{}", aopSupport.jsonPretty(obj),
