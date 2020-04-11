@@ -8,9 +8,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * 用于测试的controller层
@@ -20,30 +20,26 @@ import java.util.List;
  */
 @Slf4j
 @RestController
-@SuppressWarnings("unused")
 public class DemoTwoController {
-
-    private static SecureRandom RANDOM = new SecureRandom();
 
     @GetMapping("/insert2")
     @RecordParameters(logLevel = RecordParameters.LogLevel.DEBUG, strategy = RecordParameters.Strategy.OUTPUT)
     public Integer insertDemo(String name, Integer age, String motto, String hobby) {
-
-        return RANDOM.nextInt(10);
+        return ThreadLocalRandom.current().nextInt(10);
     }
 
     @GetMapping("/delete2")
     @RecordParameters
     @IgnoreRecordParameters
     public Boolean deleteDemo(Integer id) {
-        return RANDOM.nextBoolean();
+        return ThreadLocalRandom.current().nextBoolean();
     }
 
     @GetMapping("/update2")
     @RecordParameters
     @IgnoreRecordParameters
     public Boolean updateDemo(String hobby, Integer id) {
-        return RANDOM.nextBoolean();
+        return ThreadLocalRandom.current().nextBoolean();
     }
 
     @GetMapping("/select2")
