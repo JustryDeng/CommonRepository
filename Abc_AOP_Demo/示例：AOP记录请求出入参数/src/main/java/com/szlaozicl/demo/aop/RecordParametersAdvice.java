@@ -191,9 +191,7 @@ public class RecordParametersAdvice {
         StringBuilder sb = new StringBuilder(64);
         sb.append("\n【the way out】");
         if (isControllerMethod) {
-            sb.append("requestPath [")
-              .append(aopSupport.getRequestPath())
-              .append("] ");
+            sb.append("request-path[").append(aopSupport.getRequestPath()).append("] ");
         }
         sb.append(classMethodInfo);
         Class<?> returnClass = targetMethod.getReturnType();
