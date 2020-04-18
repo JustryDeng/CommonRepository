@@ -71,7 +71,7 @@ public class GlobalExceptionHandler {
             }
         }
         if (msg == null) {
-            resultMap.put("msg", "参数校验不通过，请按要求传参");
+            msg = "参数校验不通过，请按要求传参";
         }
         resultMap.put("msg", msg);
         return resultMap;
