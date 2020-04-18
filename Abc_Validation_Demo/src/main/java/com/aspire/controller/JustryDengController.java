@@ -1,6 +1,7 @@
 package com.aspire.controller;
 
 import com.aspire.constraints.anno.ConstraintsJustryDeng;
+import com.aspire.model.Department;
 import com.aspire.model.User;
 import com.aspire.model.ValidationBeanModel;
 import org.springframework.validation.BindingResult;
@@ -28,8 +29,8 @@ import java.util.List;
  * @author JustryDeng
  * @date 2019/1/18 22:22
  */
-@RestController
 @Validated
+@RestController
 public class JustryDengController {
 
 
@@ -39,8 +40,8 @@ public class JustryDengController {
         return "one pass!";
     }
 
-    @RequestMapping(value = "/test/two", method = RequestMethod.GET)
     @Validated
+    @RequestMapping(value = "/test/two", method = RequestMethod.GET)
     public String validationTwo(ValidationBeanModel.AbcDecimalMax myDecimalMax) {
         System.out.println(myDecimalMax.getMyDecimalMax());
         return "two pass!";
@@ -58,15 +59,15 @@ public class JustryDengController {
         return "four pass!";
     }
 
-    @RequestMapping(value = "/test/five", method = RequestMethod.GET)
     @Validated
+    @RequestMapping(value = "/test/five", method = RequestMethod.GET)
     public String validationFive(@DecimalMax(value = "12.3") String myDecimalMax) {
         System.out.println(myDecimalMax);
         return "five pass!";
     }
 
-    @RequestMapping(value = "/test/six", method = RequestMethod.GET)
     @Validated
+    @RequestMapping(value = "/test/six", method = RequestMethod.GET)
     public String validationSix(@DecimalMax(value = "12.3") String myDecimalMax) {
         System.out.println(myDecimalMax);
         return "six pass!";
@@ -94,5 +95,11 @@ public class JustryDengController {
     public String validationNine(@Validated @RequestBody User user) {
         System.out.println(user);
         return "nine pass!";
+    }
+
+    @PostMapping(value = "/test/ten")
+    public String validationTen(@Validated @RequestBody Department department) {
+        System.out.println(department);
+        return "ten pass!";
     }
 }

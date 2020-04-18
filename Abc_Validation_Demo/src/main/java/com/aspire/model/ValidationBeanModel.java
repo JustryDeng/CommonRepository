@@ -17,7 +17,7 @@ import java.util.Map;
  * @author JustryDeng
  * @date 2019/1/15 0:43
  */
-
+@SuppressWarnings("all")
 public class ValidationBeanModel {
 
     @Setter
