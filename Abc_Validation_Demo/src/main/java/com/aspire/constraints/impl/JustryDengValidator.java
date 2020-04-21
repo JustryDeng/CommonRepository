@@ -1,6 +1,9 @@
 package com.aspire.constraints.impl;
 
 import com.aspire.constraints.anno.ConstraintsJustryDeng;
+import org.hibernate.validator.internal.engine.ValidationContext;
+import org.hibernate.validator.internal.engine.ValueContext;
+import org.hibernate.validator.internal.engine.constraintvalidation.ConstraintTree;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
@@ -8,7 +11,21 @@ import javax.validation.ConstraintValidatorContext;
 /**
  * ConstraintsJustryDeng注解 校验器 实现
  * <p>
- * 注:验证器需要实现ConstraintValidator<U, V>, 其中 U为对应的注解类， V为该注解的@Target指向的类型
+ * 注:验证器需要实现ConstraintValidator<U, V>, 其中 U为对应的注解类， V为被该注解标记的字段的类型(或其父类型)
+ *
+ * 注: 当项目启动后，会(懒加载)创建ConstraintValidator实例，在创建实例后会初始化调
+ *     用{@link ConstraintValidator#initialize}方法。
+ *     所以， 只有在第一次请求时，会走initialize方法， 后面的请求是不会走initialize方法的。
+ *
+ * 注: (懒加载)创建ConstraintValidator实例时， 会走缓存; 如果缓存中有，则直接使用相
+ *     同的ConstraintValidator实例； 如果缓存中没有，那么会创建新的ConstraintValidator实例。
+ *     由于缓存的key是能唯一定位的， 且 ConstraintValidator的实例属性只有在
+ *     {@link ConstraintValidator#initialize}方法中才会写；在{@link ConstraintValidator#isValid}
+ *     方法中只是读。
+ *     所以不用担心线程安全问题。
+ *
+ * 注: 如何创建ConstraintValidator实例的，可详见源码
+ *     @see ConstraintTree#getInitializedConstraintValidator(ValidationContext, ValueContext)
  *
  * @author JustryDeng
  * @date 2019/1/15 1:19
