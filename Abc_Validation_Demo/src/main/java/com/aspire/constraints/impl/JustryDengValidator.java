@@ -36,7 +36,9 @@ public class JustryDengValidator implements ConstraintValidator<ConstraintsJustr
     private String contains;
 
     /**
-     * 初始化方法， 在执行isValid 方法前，会先执行此方法
+     * 初始化方法， 在(懒加载)创建一个当前类实例后，会马上执行此方法
+     *
+     * 注: 此方法只会执行一次，即:创建实例后马上执行。
      *
      * @param constraintAnnotation
      *         注解信息模型，可以从该模型中获取注解类中定义的一些信息，如默认值等
@@ -49,16 +51,16 @@ public class JustryDengValidator implements ConstraintValidator<ConstraintsJustr
     }
 
     /**
-     * 校验的具体逻辑实现
-     * <p>
-     * 注: 此方法可能会并发执行，需要根据实际情况看否是需要保证 线程安全
+     * 校验方法， 每个需要校验的请求都会走这个方法
+     *
+     * 注: 此方法可能会并发执行，需要根据实际情况看否是需要保证线程安全。
      *
      * @param value
-     *         被自定义注解所标注的对象的 值
+     *         被校验的对象
      * @param context
-     *         Provides contextual data and operation when applying a given constraint validator.
+     *         上下文
+     *
      * @return 校验是否通过
-     * @date 2019/1/19 11:30
      */
     @Override
     public boolean isValid(Object value, ConstraintValidatorContext context) {
@@ -66,8 +68,8 @@ public class JustryDengValidator implements ConstraintValidator<ConstraintsJustr
             return false;
         }
         if (value instanceof String) {
-            String strMessgae = (String) value;
-            return strMessgae.contains(contains);
+            String strMessage = (String) value;
+            return strMessage.contains(contains);
         } else if (value instanceof Integer) {
             return contains.contains(String.valueOf(value));
         }

@@ -1,5 +1,6 @@
-package com.aspire.plus.validator;
+package com.aspire.plus.validator.impl;
 
+import com.aspire.plus.validator.AbstractEnumValidator;
 import com.aspire.plus.validator.annotation.EnumConstraint;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ArrayUtils;
@@ -17,8 +18,8 @@ import java.util.concurrent.CopyOnWriteArraySet;
 @SuppressWarnings("rawtypes")
 public class IntegerEnumValidator extends AbstractEnumValidator<Integer> {
 
-    /** 只在懒加载IntegerEnumValidator后的initialize里写， 其他地方只读 */
-    Set<Integer> valueCache = new CopyOnWriteArraySet<>();
+    /** 只在懒加载IntegerEnumValidator后的initialize里写， 其它地方只读 */
+    private Set<Integer> valueCache = new CopyOnWriteArraySet<>();
 
     @Override
     public void initialize(EnumConstraint enumConstraint) {

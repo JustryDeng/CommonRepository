@@ -1,7 +1,8 @@
 package com.aspire.plus.validator.annotation;
 
-import com.aspire.plus.validator.StringEnumValidator;
-import com.aspire.plus.validator.IntegerEnumValidator;
+import com.aspire.plus.enums.AgeEnum;
+import com.aspire.plus.validator.impl.StringEnumValidator;
+import com.aspire.plus.validator.impl.IntegerEnumValidator;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;

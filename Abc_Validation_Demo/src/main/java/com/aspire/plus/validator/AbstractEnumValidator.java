@@ -38,24 +38,30 @@ import java.lang.reflect.Method;
 @SuppressWarnings("rawtypes")
 public abstract class AbstractEnumValidator<T> implements ConstraintValidator<EnumConstraint, T> {
 
-    /** 注解里指定的枚举类 */
-    Class<? extends Enum> clazz;
-
     /** 注解里指定的方法 */
-    String method;
+    protected String method;
 
     /** 注解里指定的错误提示 */
-    String message;
+    protected String message;
 
     /** method对应的Method实例 */
-    Method enumMethod;
+    protected Method enumMethod;
 
     /** clazz中的枚举项 */
-    Enum[] enumConstants;
+    protected Enum[] enumConstants;
 
+    /**
+     * 初始化方法， 在(懒加载)创建一个当前类实例后，会马上执行此方法
+     *
+     * 注: 此方法只会执行一次，即:创建实例后马上执行。
+     *
+     * @param enumConstraint
+     *         注解信息模型，可以从该模型中获取注解类中定义的一些信息，如默认值等
+     * @date 2019/1/19 11:27
+     */
     @Override
     public void initialize(EnumConstraint enumConstraint) {
-        clazz = enumConstraint.enumClass();
+        Class<? extends Enum> clazz = enumConstraint.enumClass();
         method = enumConstraint.method();
         message = enumConstraint.message();
         String enumClassName = clazz.getName();
@@ -68,6 +74,18 @@ public abstract class AbstractEnumValidator<T> implements ConstraintValidator<En
         enumConstants = clazz.getEnumConstants();
     }
 
+    /**
+     * 校验方法， 每个需要校验的请求都会走这个方法
+     *
+     * 注: 此方法可能会并发执行，需要根据实际情况看否是需要保证线程安全。
+     *
+     * @param targetVale
+     *         被校验的对象
+     * @param context
+     *         上下文
+     *
+     * @return 校验是否通过
+     */
     @Override
     public boolean isValid(T targetVale, ConstraintValidatorContext context) {
         if (targetVale == null) {

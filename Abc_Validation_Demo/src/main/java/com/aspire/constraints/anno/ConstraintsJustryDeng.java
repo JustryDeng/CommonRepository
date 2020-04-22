@@ -18,6 +18,8 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  *     1、message、contains、payload是必须要写的
  *     2、还需要什么方法可根据自己的实际业务需求，自行添加定义即可
  *
+ * 注:当没有指定默认值时，那么在使用此注解时，就必须输入对应的属性值
+ *
  * @author JustryDeng
  * @date 2019/1/15 1:17
  */
