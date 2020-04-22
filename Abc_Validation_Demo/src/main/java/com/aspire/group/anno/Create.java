@@ -1,0 +1,12 @@
+package com.aspire.group.anno;
+
+import javax.validation.groups.Default;
+
+/**
+ * 此自定义group 【Create】
+ *
+ * @author JustryDeng
+ * @date 2020/4/22 22:29:46
+ */
+public interface Create extends Default {
+}
