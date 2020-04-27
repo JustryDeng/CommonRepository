@@ -1679,6 +1679,7 @@ public class StreamTests {
      * 提示:这里示例的是toMap方法(转换为线程非安全的Map),对应的(转换为线程
      *      安全的ConcurrentMap的)toConcurrentMap方法用法几乎是一样的。
      *
+     * 特别注意:筛选出来后(，调用Map#merge方法之前，需保证)value值不能为null,否者会报NPE。可详见源码java.util.Map(或其对应子类)的merge方法。
      *
      * 注:Stream的collect方法，签名为:
      *       <R, A> R collect(Collector<? super T, A, R> collector)
@@ -1730,6 +1731,7 @@ public class StreamTests {
      * 提示:这里示例的是toMap方法(转换为线程非安全的Map),对应的(转换为线程
      *      安全的ConcurrentMap的)toConcurrentMap方法用法几乎是一样的。
      *
+     * 特别注意:筛选出来后(，调用Map#merge方法之前，需保证)value值不能为null,否者会报NPE。可详见源码java.util.Map(或其对应子类)的merge方法。
      *
      * 注:Stream的collect方法，签名为:
      *       <R, A> R collect(Collector<? super T, A, R> collector)
@@ -1791,6 +1793,8 @@ public class StreamTests {
      *
      * 提示:这里示例的是toMap方法(转换为线程非安全的Map),对应的(转换为线程
      *      安全的ConcurrentMap的)toConcurrentMap方法用法几乎是一样的。
+     *
+     * 特别注意:筛选出来后(，调用Map#merge方法之前，需保证)value值不能为null,否者会报NPE。可详见源码java.util.Map(或其对应子类)的merge方法。
      *
      * 注:Stream的collect方法，签名为:
      *       <R, A> R collect(Collector<? super T, A, R> collector)
