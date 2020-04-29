@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import javax.validation.ConstraintViolationException;
 import javax.validation.ValidationException;
 import java.util.HashMap;
 import java.util.Map;
@@ -21,7 +22,7 @@ import java.util.Map;
  * @date 2019/10/12 16:28
  */
 @Slf4j
-//@RestControllerAdvice
+@RestControllerAdvice
 public class GlobalExceptionHandler {
 
     /**
@@ -55,8 +56,8 @@ public class GlobalExceptionHandler {
             if (fieldError != null) {
                 msg = fieldError.getDefaultMessage();
             }
-        /// ValidationException
-        } else {
+        /// ValidationException 的子类异常ConstraintViolationException
+        } else if (e instanceof ConstraintViolationException) {
             /*
              * ConstraintViolationException的e.getMessage()形如
              *     {方法名}.{参数名}: {message}
@@ -69,9 +70,9 @@ public class GlobalExceptionHandler {
                     msg = msg.substring(lastIndex + 1).trim();
                 }
             }
-        }
-        if (msg == null) {
-            msg = "参数校验不通过，请按要求传参";
+        /// ValidationException 的其它子类异常
+        } else {
+            msg = "处理参数时异常";
         }
         resultMap.put("msg", msg);
         return resultMap;
