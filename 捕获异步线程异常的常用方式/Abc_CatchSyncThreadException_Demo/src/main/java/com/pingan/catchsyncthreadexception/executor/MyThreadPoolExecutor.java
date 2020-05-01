@@ -58,7 +58,7 @@ public class MyThreadPoolExecutor extends ThreadPoolExecutor {
                 }
             }
             if (t != null) {
-                log.error("sync-thread occur exception", t);
+                log.error("async-thread occur exception", t);
             }
 
     }
