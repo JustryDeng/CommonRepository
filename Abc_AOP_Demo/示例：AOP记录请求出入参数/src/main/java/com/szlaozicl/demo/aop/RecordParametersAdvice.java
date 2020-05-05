@@ -118,11 +118,11 @@ public class RecordParametersAdvice {
         final String classMethodInfo = "Class#Method → " + clazzName + "#" + targetMethod.getName();
 
         if (shouldRecordInputParams) {
-            preHandel(thisJoinPoint, logLevel, targetMethod, classMethodInfo, isControllerMethod);
+            preHandle(thisJoinPoint, logLevel, targetMethod, classMethodInfo, isControllerMethod);
         }
         Object obj = thisJoinPoint.proceed();
         if (shouldRecordOutputParams) {
-            postHandel(logLevel, targetMethod, obj, classMethodInfo, isControllerMethod);
+            postHandle(logLevel, targetMethod, obj, classMethodInfo, isControllerMethod);
 
         }
         return obj;
@@ -143,7 +143,7 @@ public class RecordParametersAdvice {
      *            是否是controller类中的方法
      * @date 2020/4/10 18:21:17
      */
-    private void preHandel(ProceedingJoinPoint pjp, RecordParameters.LogLevel logLevel,
+    private void preHandle(ProceedingJoinPoint pjp, RecordParameters.LogLevel logLevel,
                            Method targetMethod, String classMethodInfo, boolean isControllerMethod) {
         StringBuilder sb = new StringBuilder(64);
         sb.append("\n【the way in】");
@@ -186,7 +186,7 @@ public class RecordParametersAdvice {
      *            是否是controller类中的方法
      * @date 2020/4/10 18:21:17
      */
-    private void postHandel(RecordParameters.LogLevel logLevel, Method targetMethod,
+    private void postHandle(RecordParameters.LogLevel logLevel, Method targetMethod,
                             Object obj, String classMethodInfo, boolean isControllerMethod) {
         StringBuilder sb = new StringBuilder(64);
         sb.append("\n【the way out】");
