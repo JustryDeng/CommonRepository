@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    1、status="OFF" 不查看log4j2本身的日志信息
+    2、monitorInterval="60" 每隔60秒重新加载一下此配置文件
+-->
+<!--<Configuration status="OFF" monitorInterval="60">-->
+<Configuration status="OFF" monitorInterval="0">
+
+	<!--全局参数-->
+	<Properties>
+		<Property name="pattern">%d{yyyy-MM-dd HH:mm:ss,SSS} %5p %t %c:%L - %m%n</Property>
+		<!-- 日志文件存储目录，根据本文的配置，这里必须以“/”结尾(可以使用绝对路径，也可以使用相对路径) -->
+		<Property name="logDir">log/</Property>
+		<!-- 日志文件名(注:根据本文的配置，日志文件后缀名他统一用.log，这里直接设置无后缀的文件名即可) -->
+		<Property name="noSuffixLogFileName">log</Property>
+	</Properties>
+
+
+	<Appenders>
+
+		<!-- *************************************** 同步Appenders *************************************** -->
+		<!-- 定义输出到控制台 -->
+		<Console name="console" target="SYSTEM_OUT" follow="true">
+			<!--控制台只输出level及以上级别的信息-->
+			<PatternLayout>
+				<Pattern>${pattern}</Pattern>
+			</PatternLayout>
+		</Console>
+
+		<!--
+		    同一来源的Appender可以定义多个RollingFile，定义按天存储日志。
+		    注:filePattern的%d匹配 yyyy-MM-dd HH_mm_ss  匹配结果形如  2019-03-05 21_31_04
+		    注: %d匹配时间时，最好不要用冒号、管道符等，敏感字符,否者可能导致filePattern失效
+		-->
+		<RollingFile name="rollingFile" fileName="${logDir}${noSuffixLogFileName}.log"
+					 filePattern="${logDir}${noSuffixLogFileName}_%d{yyyy-MM-dd}.log">
+			<!--控制台只输出level及以上级别的信息-->
+			<PatternLayout>
+				<Pattern>${pattern}</Pattern>
+			</PatternLayout>
+			<!--
+			   由于这里设置的是1，而filePattern设置
+			   的时间粒度最小为天，所以是1天一个日志文件
+			-->
+			<!-- 设置触发Rolling的策略 -->
+			<Policies>
+                <!--
+                    TimeBasedTriggeringPolicy 需要与 filePattern配合使用。
+                    假设filePattern的值中使用的%d的最小单位是秒，那么这里就是设置每1秒分离出一个 日志文件
+                    注:如果最小单位是天，那么这里就是设置每1天 分离出一个日志文件。
+                    即:假设filePattern的值中使用的%d的最小单位是t,TimeBasedTriggeringPolicy的interval值是n,
+                       那么意思就是  每 n*t 时间产生一个日志文件。
+                -->
+				<TimeBasedTriggeringPolicy interval="1"/>
+				<!-- 设置当日志文件超过20KB时，按照filePattern的格式，分离出一个日志文件 -->
+				<!--<SizeBasedTriggeringPolicy size="20 KB" />-->
+			</Policies>
+			<!--
+			    日志保留策略，配置只保留50天的日志   注:时间单位  d-天, h-时, m-分, s-秒
+			    注:本人测试过 m-分, s-秒，暂未测试过d-天, h-时, 不过以类推法来讲的话，应该是不会错的
+			-->
+			<DefaultRolloverStrategy>
+				<Delete basePath="${logDir}/">
+					<IfFileName glob="${noSuffixLogFileName}_*.log" />
+					<IfLastModified age="50d" />
+				</Delete>
+			</DefaultRolloverStrategy>
+		</RollingFile>
+
+
+		<!-- *************************************** 异步Appenders *************************************** -->
+		<Async name="asyncConsole">
+			<!-- 引用上面的name为console的appender即可 -->
+			<AppenderRef ref="console"/>
+		</Async>
+
+		<Async name="asyncRollingFile">
+			<!-- 引用上面的name为rollingFile的appender即可 -->
+			<AppenderRef ref="rollingFile"/>
+		</Async>
+	</Appenders>
+
+
+	<Loggers>
+        <!-- *************************************** 同步日志 *************************************** -->
+		<Logger name="com" level="debug">
+				<AppenderRef ref="rollingFile" />
+		</Logger>
+
+		<Root level="debug" >
+			<AppenderRef ref="console" />
+		</Root>
+
+	</Loggers>
+</Configuration>

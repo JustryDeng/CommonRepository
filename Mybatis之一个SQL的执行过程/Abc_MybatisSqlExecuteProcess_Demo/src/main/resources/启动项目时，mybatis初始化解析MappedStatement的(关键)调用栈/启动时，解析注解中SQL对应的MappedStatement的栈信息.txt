@@ -1,0 +1,10 @@
+"main@1" prio=5 tid=0x1 nid=NA runnable
+  java.lang.Thread.State: RUNNABLE
+	  at org.apache.ibatis.session.Configuration.addMappedStatement(Configuration.java:686)
+	  at org.apache.ibatis.builder.MapperBuilderAssistant.addMappedStatement(MapperBuilderAssistant.java:296)
+	  at org.apache.ibatis.builder.annotation.MapperAnnotationBuilder.parseStatement(MapperAnnotationBuilder.java:356)
+	  at org.apache.ibatis.builder.annotation.MapperAnnotationBuilder.parse(MapperAnnotationBuilder.java:139)
+	  at org.apache.ibatis.binding.MapperRegistry.addMapper(MapperRegistry.java:72)
+	  at org.apache.ibatis.session.Configuration.addMapper(Configuration.java:759)
+	  at org.mybatis.spring.mapper.MapperFactoryBean.checkDaoConfig(MapperFactoryBean.java:80)
+	  at org.springframework.dao.support.DaoSupport.afterPropertiesSet(DaoSupport.java:44)

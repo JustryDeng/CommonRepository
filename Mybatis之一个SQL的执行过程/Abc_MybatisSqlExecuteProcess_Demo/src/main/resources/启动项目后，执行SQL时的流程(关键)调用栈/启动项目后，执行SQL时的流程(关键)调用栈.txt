@@ -1,0 +1,37 @@
+"main@1" prio=5 tid=0x1 nid=NA runnable
+  java.lang.Thread.State: RUNNABLE
+      /*
+       * 根据前面获取到的CacheKey和BoundSql，加上前面原来就有的参数
+       * 调用Executor#query(MappedStatement, Object, RowBounds, ResultHandler, CacheKey, BoundSql)
+       * 执行查询
+       */
+	  at org.apache.ibatis.executor.CachingExecutor.query(CachingExecutor.java:95)
+	  /*
+	   * 在
+	   *   Executor#query(MappedStatement, Object, RowBounds, ResultHandler)
+	   * 或
+	   *   插件
+	   * 中，获取到CacheKey和BoundSql
+	   *
+	   * 注: 获取BoundSql是通过MappedStatement#getBoundSql获取到的。
+	   *     其实最下是org.apache.ibatis.mapping.SqlSource.getBoundSql获取到BoundSql，
+	   *     然后再org.apache.ibatis.mapping.MappedStatement.getBoundSql方法中，对获取到的
+	   *     BoundSql进行进一步处理，然后返回的BoundSql
+	   */
+	  at com.github.pagehelper.PageInterceptor.intercept(PageInterceptor.java:108)
+	  at org.apache.ibatis.plugin.Plugin.invoke(Plugin.java:61)
+	  at com.sun.proxy.$Proxy99.query(Unknown Source:-1)
+	  at org.apache.ibatis.session.defaults.DefaultSqlSession.selectList(DefaultSqlSession.java:147)
+	  at org.apache.ibatis.session.defaults.DefaultSqlSession.selectList(DefaultSqlSession.java:140)
+	  at sun.reflect.NativeMethodAccessorImpl.invoke0(NativeMethodAccessorImpl.java:-1)
+	  at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	  at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	  at java.lang.reflect.Method.invoke(Method.java:498)
+	  at org.mybatis.spring.SqlSessionTemplate$SqlSessionInterceptor.invoke(SqlSessionTemplate.java:433) // SqlSessionTemplate调用方法
+	  at com.sun.proxy.$Proxy81.selectList(Unknown Source:-1)
+	  at org.mybatis.spring.SqlSessionTemplate.selectList(SqlSessionTemplate.java:230)
+	  at org.apache.ibatis.binding.MapperMethod.executeForMany(MapperMethod.java:147)
+	  at org.apache.ibatis.binding.MapperMethod.execute(MapperMethod.java:80)
+	  at org.apache.ibatis.binding.MapperProxy.invoke(MapperProxy.java:58) // 代理对象调用方法
+	  at com.sun.proxy.$Proxy86.selectAll_xml(Unknown Source:-1) // 代理对象调用方法
+	  at com.aspire.ssm.SsmApplicationTests.testOne(SsmApplicationTests.java:24) // 触发查询

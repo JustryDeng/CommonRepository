@@ -1,0 +1,15 @@
+"main@1" prio=5 tid=0x1 nid=NA runnable
+  java.lang.Thread.State: RUNNABLE
+	  at org.apache.ibatis.plugin.InterceptorChain.pluginAll(InterceptorChain.java:30) // 应用插件(将插件与Executor关联起来)
+	  at org.apache.ibatis.session.Configuration.newExecutor(Configuration.java:599)
+	  at org.apache.ibatis.session.defaults.DefaultSqlSessionFactory.openSessionFromDataSource(DefaultSqlSessionFactory.java:96)
+	  at org.apache.ibatis.session.defaults.DefaultSqlSessionFactory.openSession(DefaultSqlSessionFactory.java:57)
+	  at org.mybatis.spring.SqlSessionUtils.getSqlSession(SqlSessionUtils.java:98) // 获取SqlSession时
+	  at org.mybatis.spring.SqlSessionTemplate$SqlSessionInterceptor.invoke(SqlSessionTemplate.java:428)
+	  at com.sun.proxy.$Proxy81.selectList(Unknown Source:-1)
+	  at org.mybatis.spring.SqlSessionTemplate.selectList(SqlSessionTemplate.java:230)
+	  at org.apache.ibatis.binding.MapperMethod.executeForMany(MapperMethod.java:147)
+	  at org.apache.ibatis.binding.MapperMethod.execute(MapperMethod.java:80)
+	  at org.apache.ibatis.binding.MapperProxy.invoke(MapperProxy.java:58) // 代理对象调用方法
+	  at com.sun.proxy.$Proxy86.selectAll_xml(Unknown Source:-1)  // 代理对象调用方法
+	  at com.aspire.ssm.SsmApplicationTests.testOne(SsmApplicationTests.java:24) // 触发查询

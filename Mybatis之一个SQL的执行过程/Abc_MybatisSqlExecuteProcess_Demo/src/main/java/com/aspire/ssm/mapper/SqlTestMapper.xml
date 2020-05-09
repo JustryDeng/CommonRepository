@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.aspire.ssm.mapper.SqlTestMapper">
+
+    <select id="selectAll_xml" resultMap="employeeResultMap">
+		SELECT `id`,`name`,`age`,`gender`,`motto`,`birthday`,`hobby` FROM `employee`
+	</select>
+
+    <select id="selectListByName_xml" resultMap="employeeResultMap" parameterType="java.util.Map">
+		SELECT `id`,`name`,`age`,`gender`,`motto`,`birthday`,`hobby` FROM `employee` WHERE name=#{name}
+	</select>
+
+    <select id="selectList_xml" resultMap="employeeResultMap" parameterType="java.util.Map">
+        SELECT `id`,`name`,`age`,`gender`,`motto`,`birthday`,`hobby` FROM `employee` WHERE 1=1
+		<if test="employee.name != null  and employee.name != ''">
+			AND `name` = #{employee.name}
+		</if>
+		<if test="employee.age != null">
+			AND age = #{employee.age}
+		</if>
+		<if test="employee.gender != null  and employee.gender != ''">
+			AND gender = #{employee.gender}
+		</if>
+	</select>
+
+	<resultMap type="com.aspire.ssm.model.Employee" id="employeeResultMap">
+		<id property="id" column="id" />
+		<result property="name" column="name" />
+		<result property="age" column="age" />
+		<result property="gender" column="gender" />
+		<result property="motto" column="motto" />
+		<result property="birthday" column="birthday" />
+		<result property="hobby" column="hobby" />
+	</resultMap>
+
+    <!-- /// ******************* 使用${}的情况-->
+<!--	<select id="selectListByName_xml" resultMap="employeeResultMap" parameterType="java.util.Map">-->
+<!--		SELECT `id`,`name`,`age`,`gender`,`motto`,`birthday`,`hobby` FROM `employee` WHERE name='${name}'-->
+<!--	</select>-->
+
+<!--	<select id="selectList_xml" resultMap="employeeResultMap" parameterType="java.util.Map">-->
+<!--		SELECT `id`,`name`,`age`,`gender`,`motto`,`birthday`,`hobby` FROM `employee` WHERE 1=1-->
+<!--		<if test="employee.name != null  and employee.name != ''">-->
+<!--			AND `name` = '${employee.name}'-->
+<!--		</if>-->
+<!--		<if test="employee.age != null">-->
+<!--			AND age = ${employee.age}-->
+<!--		</if>-->
+<!--		<if test="employee.gender != null  and employee.gender != ''">-->
+<!--			AND gender = '${employee.gender}'-->
+<!--		</if>-->
+<!--	</select>-->
+
+</mapper>
