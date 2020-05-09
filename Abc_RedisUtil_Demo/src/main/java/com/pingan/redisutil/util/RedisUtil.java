@@ -2957,7 +2957,10 @@ public class RedisUtil implements ApplicationContextAware {
 	 * 		        flag = RedisUtil.LockOps.getLockUntilTimeout(lockName, lockValue, 2000);
 	 * 		        // 阻塞获取e.g.
 	 * 		        flag = RedisUtil.LockOps.getLockUntilTimeout(lockName, lockValue, 2, TimeUnit.SECONDS, 2000);
-	 * 				// your logic
+	 * 				if (!flag) {
+	 * 				    throw new RuntimeException(" obtain redis-lock[" + lockName + "] fail");
+	 * 				}
+	 * 		     	// your logic
 	 * 			    //	...
 	 *          } finally {
 	 * 				if (flag) {
@@ -2966,7 +2969,7 @@ public class RedisUtil implements ApplicationContextAware {
 	 *          }
 	 *
 	 * |--------------------------------------------------------------------------------------------------------------------|
-	 * |单机版分布式锁、集群版分布式锁，特别说明:                                                                                |
+	 * |单机版分布式锁、集群版分布式锁，特别说明:                                                                                 |
 	 * |   - 此锁是针对单机Redis的分布式锁;                                                                                    |
 	 * |   - 对于Redis集群而言, 此锁可能存在失效的情况。考虑如下情况:                                                              |
 	 * |         首先，当客户端A通过key-value(假设为key名为key123)在Master上获取到一个锁。                                        |
