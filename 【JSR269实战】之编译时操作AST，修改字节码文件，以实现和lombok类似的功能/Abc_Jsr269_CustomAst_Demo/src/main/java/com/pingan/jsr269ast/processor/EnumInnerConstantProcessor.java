@@ -87,9 +87,11 @@ public class EnumInnerConstantProcessor extends AbstractProcessor {
             String className = (((JCTree.JCClassDecl)jcTree).sym).type.toString();
             String enumFlag = "enum";
             if (!enumFlag.equalsIgnoreCase(jcTree.getKind().name())) {
-                // 只要用的是Diagnostic.Kind.ERROR输出的消息，那么编译时就会自动编译失败的
-                messager.printMessage(Diagnostic.Kind.ERROR, "@EnumInnerConstant only support enum-class, ["
-                        + className + "] is not supported");
+                // 为保证错误信息能在各种情况下都能被看到, 这里用多种方式记录错误信息
+                String errorMessage = "@EnumInnerConstant only support enum-class, [" + className + "] is not supported";
+                System.err.println(errorMessage);
+                messager.printMessage(Diagnostic.Kind.ERROR, errorMessage);
+                throw new RuntimeException(errorMessage);
             }
             /*
              * 通过JCTree.accept(JCTree.Visitor)访问JCTree对象的内部信息。
@@ -175,13 +177,19 @@ public class EnumInnerConstantProcessor extends AbstractProcessor {
      */
     private String checkInnerClassName (String innerClassName) {
         if (innerClassName == null || innerClassName.trim().length() == 0) {
-            messager.printMessage(Diagnostic.Kind.ERROR, "@EnumInnerConstant. inner-class-name cannot be empty");
-            return innerClassName;
+            // 为保证错误信息能在各种情况下都能被看到, 这里用多种方式记录错误信息
+            String errorMessage = "@EnumInnerConstant. inner-class-name cannot be empty";
+            System.err.println(errorMessage);
+            messager.printMessage(Diagnostic.Kind.ERROR, errorMessage);
+            throw new RuntimeException(errorMessage);
         }
         innerClassName = innerClassName.trim();
         if (!INNER_CLASS_NAME_PATTERN.matcher(innerClassName).matches()) {
-            messager.printMessage(Diagnostic.Kind.ERROR, "@EnumInnerConstant. inner-class-name must match regex "
-                    + INNER_CLASS_NAME_REGEX);
+            // 为保证错误信息能在各种情况下都能被看到, 这里用多种方式记录错误信息
+            String errorMessage = "@EnumInnerConstant. inner-class-name must match regex " + INNER_CLASS_NAME_REGEX;
+            System.err.println(errorMessage);
+            messager.printMessage(Diagnostic.Kind.ERROR, errorMessage);
+            throw new RuntimeException(errorMessage);
         }
         return innerClassName;
     }
