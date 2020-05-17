@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.pingan</groupId>
+    <artifactId>jsr269-custom-ast</artifactId>
+    <version>1.0.1</version>
+    <name>jsr269-custom-ast</name>
+    <description>基于JSR269, 面向AST,自定义实现一个编译时修改字节码的类。具体功能为: generate inner-class containing outer-class's all
+        public-static-final parameters
+    </description>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.sun</groupId>
+            <artifactId>tools</artifactId>
+            <version>1.8</version>
+            <scope>system</scope>
+            <systemPath>${java.home}/../lib/tools.jar</systemPath>
+        </dependency>
+    </dependencies>
+
+    <build>
+
+        <!--
+            问: 为什么这里需要先排除【META-INF/**/*】, 然后又用maven-resources-plugin插件
+                在prepare-package阶段时引入？
+
+            答: 首先, 需要先明白META-INF下services目录下javax.annotation.processing.Processor文件的
+                作用: java在编译时，会先去资源目录下读取META-INF文件夹, 当发现META-INF/services/javax.annotation.processing.Processor
+                      文件时, 会去找该文件(内容)里指定的处理器(注: 这个处理器此时应当是一个已经编译了的class文件),以
+                      这个处理器来辅助执行此次的编译。
+                简单的说，就是: 要编译这个项目，可以! 但是你得先提供对应处理器的class文件才行。
+                但是呢, 这个处理器,正是我们此次需要编译的java文件之一;也就是说它还没有被编译呢,还只是java文件,而不是class文件。
+
+                所以问题就产生与解决:
+                    编译器maven大哥: 要编译, 可以啊!请提供Processor对应的class文件。
+                    项目小弟: 大哥，我现在要编译的对象就是Processor对应的java文件,还没编译呢，我怎么提供class文件给您呢!
+                    编译器maven大哥: 我不管, 反正我检测到了META-INF/services/javax.annotation.processing.Processor文件存在,
+                                    那你就必须得提供该文件(的文件内容里)定义的Processor的class文件
+                    项目小弟(思考中): emmmmmmmm~
+                                    项目大哥是因为检测到了META-INF/services/javax.annotation.processing.Processor文件,所以
+                                    才问我要Processor对应的class文件;那我可不可以在资源目录下添加这个文件,
+                                    即:不要META-INF/services/javax.annotation.processing.Processor文件呢?
+                   项目小弟(思考中):  如果我不要这个文件的话, 会有什么影响呢?让我想想:
+                                    比如说,如果不要这个文件后,我被打成了jar包abc.jar, 那么别人在引入我(abc.jar)后, 使用了
+                                    进行我的编译时操作AST的注解后，要想让注解生效,就得在编译时主动指定使用处理器了，就像这样:
+                                    javac …… -processor com.pingan.mylombok.processor.EnumInnerConstantProcessor Test.java
+                                    , 这样的话, 太麻烦了，使用者肯定要骂娘的。不能这么搞， 所以在我提供出去的jar包中，一定要有
+                                    META-INF/services/javax.annotation.processing.Processor文件才行，我可不喜欢被别人骂娘！
+                   项目小弟(思考中):  哈!想到了!!!!!!!!
+                                    我完全可以在[编译器maven大哥]进行META-INF/services/javax.annotation.processing.Processor文件
+                                    检测之后,再把文件考过去嘛, 这样一来, [编译器maven大哥]既不会阻挠我编译，编译后打出来的jar里又有
+                                    META-INF/services/javax.annotation.processing.Processor文件了, 我真是个天才。
+        -->
+
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <excludes>
+                    <exclude>META-INF/**/*</exclude>
+                </excludes>
+            </resource>
+        </resources>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+                <configuration>
+                    <!--
+                        指定Java compiler编译时，使用的source与target版本。
+                        注: 不同的source、target版本,编译后产生的Class版本号可能不同
+                     -->
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <id>process-META</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>target/classes</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${basedir}/src/main/resources/</directory>
+                                    <includes>
+                                        <include>**/*</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>
