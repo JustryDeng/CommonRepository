@@ -27,8 +27,13 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 方法 入参、出参 记录
- *
+ *<p>
  * 注: 根据此AOP的逻辑， 若注解与表达式同时匹配成功，那么 注解的优先级高于表达式的优先级。
+ *<p>
+ * <b>特别注意:<b/>这里借助了RecordParametersAdvice的logger来记录其它地方的日志。即: 相当于其它地方将记录日志的动
+ *                作委托给RecordParametersAdvice的logger来进行, 所以此logger需要能打印所有地方最下的日志级别(一般为debug)。
+ *                即:需要在配置文件中配置<code>logging.level.com.szlaozicl.demo.aop.RecordParametersAdvice=debug</code>
+ *                   以保证此处有“权限”记录所有用到的日志级别的日志。
  *
  * @author JustryDeng
  * @date 2019/12/4 13:57
@@ -203,7 +208,6 @@ public class RecordParametersAdvice {
         aopSupport.log(logLevel, sb.toString());
     }
 
-    @Slf4j
     @Component
     static class AopSupport {
 
