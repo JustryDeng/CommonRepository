@@ -1705,7 +1705,6 @@ public class StreamTests {
         // 数据准备
         Stream<Staff> s = Stream.of(
                 Staff.builder().name("张三").age(18).workStartTimestamp(123L).faceScore(99.9D).build(),
-                Staff.builder().name("张三").age(18).workStartTimestamp(123L).faceScore(99.9D).build(),
                 Staff.builder().name("李四").age(45).workStartTimestamp(456L).faceScore(66.6D).build(),
                 Staff.builder().name("王五").age(24).workStartTimestamp(789L).faceScore(33.3D).build()
         );
@@ -1717,7 +1716,7 @@ public class StreamTests {
         Function<Staff, Integer> valueMapper = Staff::getAge;
 
         // 将Stream<T>转换为Map
-        Map<String, Integer> resultMap = s.parallel().collect(
+        Map<String, Integer> resultMap = s.collect(
                 Collectors.toMap(keyMapper, valueMapper)
         );
 
@@ -1774,7 +1773,7 @@ public class StreamTests {
         };
 
         // 将Stream<T>转换为Map
-        Map<String, Staff> resultMap = s.parallel().collect(
+        Map<String, Staff> resultMap = s.collect(
                 Collectors.toMap(keyMapper, valueMapper, mergeFunction)
         );
 
@@ -1838,7 +1837,7 @@ public class StreamTests {
         Supplier<LinkedHashMap<String, Integer>> mapSupplier = LinkedHashMap::new;
 
         // 将Stream<T>转换为Map
-        LinkedHashMap<String, Integer> resultMap = s.parallel().collect(
+        LinkedHashMap<String, Integer> resultMap = s.collect(
                 Collectors.toMap(keyMapper, valueMapper, mergeFunction, mapSupplier)
         );
 
