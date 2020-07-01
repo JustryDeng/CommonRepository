@@ -1045,8 +1045,11 @@ public class StreamTests {
      * 注:Collectors的重载groupingBy方法，(本次示例的方法的)签名为:
      *       Collector<T, ?, Map<K, List<T>>> groupingBy(Function<? super T, ? extends K> classifier)
      *    追注:此方法内部调用的实际是groupingBy(classifier, HashMap::new, toList())方法
-     *    追注:此方法对应的线程安全的方法为(使用方式几乎一致):
+     *
+     * 注:此方法返回的Map实现是非线程安全的，如果需要返回线程安全的Map实现，可使用(使用方式几乎一致):
      *         Collector<T, ?, ConcurrentMap<K, List<T>>> groupingByConcurrent(Function<? super T, ? extends K> classifier)
+     *
+     * 注: 不论是串行stream，还是并行parallelStream，对于groupingBy(或groupingByConcurrent)本身来说，是线程安全的。
      *
      * 注:当前stream类型为T。
      *
@@ -1108,9 +1111,12 @@ public class StreamTests {
      *       Collector<T, ?, Map<K, D>> groupingBy(Function<? super T, ? extends K> classifier,
      *                                             Collector<? super T, A, D> downstream)
      *    追注:此方法内部调用的实际是groupingBy(classifier, HashMap::new, downstream)方法
-     *    追注:此方法对应的线程安全的方法为(使用方式几乎一致):
+     *
+     * 注:此方法返回的Map实现是非线程安全的，如果需要返回线程安全的Map实现，可使用(使用方式几乎一致):
      *         Collector<T, ?, ConcurrentMap<K, D>> groupingByConcurrent(Function<? super T, ? extends K> classifier,
      *                                                                   Collector<? super T, A, D> downstream)
+     *
+     * 注: 不论是串行stream，还是并行parallelStream，对于groupingBy(或groupingByConcurrent)本身来说，是线程安全的。
      *
      * 注:当前stream类型为T。
      */
@@ -1155,10 +1161,13 @@ public class StreamTests {
      *       Collector<T, ?, M> groupingBy(Function<? super T, ? extends K> classifier,
      *                                     Supplier<M> mapFactory,
      *                                     Collector<? super T, A, D> downstream)
-     *    追注:此方法对应的线程安全的方法为(使用方式几乎一致):
+     *
+     * 注:此方法返回的Map实现是非线程安全的，如果需要返回线程安全的Map实现，可使用(使用方式几乎一致):
      *         Collector<T, ?, M> groupingByConcurrent(Function<? super T, ? extends K> classifier,
      *                                                 Supplier<M> mapFactory,
      *                                                 Collector<? super T, A, D> downstream)
+     *
+     * 注: 不论是串行stream，还是并行parallelStream，对于groupingBy(或groupingByConcurrent)本身来说，是线程安全的。
      *
      * 注:当前stream类型为T。
      */
