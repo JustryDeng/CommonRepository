@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true">
+
+    <property name="logFilePositionDir" value="log"/>
+    <property name="logFileName" value="log"/>
+    <property name="pattern"
+              value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread|%X{requestId}] %-5level %logger{36}:%L- %msg%n"/>
+
+    <appender name="consoleAppender" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${pattern}</pattern>
+            <charset class="java.nio.charset.Charset">UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <appender name="fileAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${logFilePositionDir}/${logFileName}.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${logFilePositionDir}/${logFileName}.%d{yyyy-MM-dd}.%i.log
+            </fileNamePattern>
+            <MaxHistory>
+                30
+            </MaxHistory>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>200MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${pattern}</pattern>
+            <charset class="java.nio.charset.Charset">UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <appender name="evaluatorAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${logFilePositionDir}/${logFileName}-evaluator.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${logFilePositionDir}/${logFileName}.%d{yyyy-MM-dd}-evaluator.%i.log
+            </fileNamePattern>
+            <MaxHistory>
+                30
+            </MaxHistory>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>500MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${pattern}</pattern>
+            <charset class="java.nio.charset.Charset">UTF-8</charset>
+        </encoder>
+        <!-- 此filter约束了当前appender:  只记录满足下述表达式的日志 -->
+        <!-- 方式一(效率更高): 使用基于Java语法的表达式解析器JaninoEventEvaluator -->
+        <filter class="ch.qos.logback.core.filter.EvaluatorFilter">
+            <evaluator>
+                <!--
+                可用的变量-及其类型有:
+                    event - LoggingEvent
+                    message - String
+                    formattedMessage - String
+                    logger - String
+                    loggerContext - 	LoggerContextVO
+                    level - int
+                    timeStamp - long
+                    marker - Marker
+                    mdc - Map
+                    throwable - java.lang.Throwable
+                    throwableProxy - 	IThrowableProxy
+                注: 更多信息可debug这里ch.qos.logback.classic.boolex.JaninoEventEvaluator.getParameterValues，进行观察
+                -->
+                <expression>
+                    <!-- 在XML中， &&需要这样写: &amp;&amp;   或者使用<![CDATA[&&]]> -->
+                    boolean shouldLog = formattedMessage.contains("debug") || formattedMessage.contains("error");
+                    if (shouldLog <![CDATA[&&]]> (level >= INFO)) {
+                        <!-- OnMatch -->
+                        return true;
+                    } else {
+                        <!-- OnMismatch -->
+                        return false;
+                    }
+                </expression>
+            </evaluator>
+            <OnMatch>ACCEPT</OnMatch>
+            <OnMismatch>DENY</OnMismatch>
+        </filter>
+
+        <!-- 方式二: 使用基于Groovy语法的表达式解析器GEventEvaluator -->
+        <!-- <filter class="ch.qos.logback.core.filter.EvaluatorFilter">-->
+        <!--     <evaluator class="ch.qos.logback.classic.boolex.GEventEvaluator">-->
+        <!--         <expression>-->
+        <!--             e.level.toInt() >= WARN.toInt() &amp;&amp;  &lt;!&ndash; Stands for && in XML &ndash;&gt;-->
+        <!--             !(e.mdc?.get("req.userAgent") =~ /Googlebot|msnbot|Yahoo/ )-->
+        <!--         </expression>-->
+        <!--     </evaluator>-->
+        <!--     <OnMismatch>DENY</OnMismatch>-->
+        <!--     <OnMatch>NEUTRAL</OnMatch>-->
+        <!-- </filter>-->
+    </appender>
+
+    <logger name="com" level="debug">
+        <appender-ref ref="fileAppender"/>
+        <appender-ref ref="evaluatorAppender"/>
+    </logger>
+
+    <root>
+        <appender-ref ref="consoleAppender"/>
+    </root>
+</configuration>
