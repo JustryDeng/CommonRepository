@@ -31,7 +31,6 @@
         </encoder>
     </appender>
 
-
     <!-- 启用DynamicThresholdFilter -->
     <turboFilter class="ch.qos.logback.classic.turbo.DynamicThresholdFilter">
         <DefaultThreshold>ERROR</DefaultThreshold>
