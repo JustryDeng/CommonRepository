@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Configuration status="OFF" monitorInterval="60">
+
+	<Properties>
+		<Property name="pattern">%d{yyyy-MM-dd HH:mm:ss,SSS} [%thread|%X{requestId}]  %5p %t %c:%L - %msg%n</Property>
+		<Property name="logDir">log/</Property>
+		<Property name="noSuffixLogFileName">log</Property>
+	</Properties>
+
+	<!--
+		提示一: 过滤顺序从上到下依次过滤
+		提示二: 通过设置onMatch与onMismatch的值， 可以达到 过滤条件之间and or的效果
+	-->
+	<Filters>
+		<!-- 比如这里: 先找出大于等于WARN级别的日志，然后再在剩下的日志中找出包含字符串bgm的日志， 这是and的效果
+		-->
+		<ThresholdFilter level="WARN" onMatch="NEUTRAL" onMismatch="DENY"/>
+		<StringMatchFilter text="bgm" onMatch="NEUTRAL" onMismatch="DENY"/>
+	</Filters>
+
+	<!--	<Filters>-->
+	<!--		&lt;!&ndash; 比如这里: or的效果 (注意最后一个的onMismatch值要为DENY) &ndash;&gt;-->
+	<!--		<ThresholdFilter level="WARN" onMatch="ACCEPT" onMismatch="NEUTRAL"/>-->
+	<!--		<StringMatchFilter text="bg" onMatch="ACCEPT" onMismatch="NEUTRAL"/>-->
+	<!--		<StringMatchFilter text="bgm" onMatch="ACCEPT" onMismatch="DENY"/>-->
+	<!--	</Filters>-->
+
+	<Appenders>
+
+		<Console name="console" target="SYSTEM_OUT" follow="true" immediateFlush="false">
+			<PatternLayout>
+				<Pattern>${pattern}</Pattern>
+			</PatternLayout>
+		</Console>BurstFilter
+
+		<RollingFile name="rollingFile" fileName="${logDir}${noSuffixLogFileName}.log"
+					 filePattern="${logDir}${noSuffixLogFileName}_%d{yyyy-MM-dd}.log" immediateFlush="false">
+			<PatternLayout>
+				<Pattern>${pattern}</Pattern>
+			</PatternLayout>
+			<Policies>
+				<TimeBasedTriggeringPolicy interval="1"/>
+			</Policies>
+			<DefaultRolloverStrategy>
+				<Delete basePath="${logDir}/">
+					<IfFileName glob="${noSuffixLogFileName}_*.log" />
+					<IfLastModified age="50d" />
+				</Delete>
+			</DefaultRolloverStrategy>
+		</RollingFile>
+	</Appenders>
+
+
+	<Loggers>
+		<Logger name="com" level="debug">
+			<AppenderRef ref="rollingFile" />
+		</Logger>
+
+		<Root level="debug" >
+			<AppenderRef ref="console" />
+		</Root>
+	</Loggers>
+
+</Configuration>

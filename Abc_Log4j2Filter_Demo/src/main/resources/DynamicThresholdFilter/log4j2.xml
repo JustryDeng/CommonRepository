@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Configuration status="OFF" monitorInterval="60">
+
+	<Properties>
+		<Property name="pattern">%d{yyyy-MM-dd HH:mm:ss,SSS} [%thread|%X{requestId}]  %5p %t %c:%L - %msg%n</Property>
+		<Property name="logDir">log/</Property>
+		<Property name="noSuffixLogFileName">log</Property>
+	</Properties>
+
+
+	<DynamicThresholdFilter key="userRole" defaultThreshold="ERROR" onMatch="ACCEPT" onMismatch="NEUTRAL">
+		<KeyValuePair key="admin" value="DEBUG"/>
+		<KeyValuePair key="dba" value="INFO"/>
+		<KeyValuePair key="user" value="WARN"/>
+	</DynamicThresholdFilter>
+
+
+<!--	&lt;!&ndash; 上下文中存在键userRole,但是对应的值不匹配任意一个KeyValuePair中的key的场景: 此时-->
+<!--	     <DynamicThresholdFilter key="userRole" defaultThreshold="AAA" onMatch="BBB" onMismatch="CCC">-->
+<!--	     等价于-->
+<!--	     <LevelMatchFilter level="AAA" onMatch="BBB" onMismatch="CCC"/> -->
+<!--	&ndash;&gt;-->
+<!--	<DynamicThresholdFilter key="userRole" defaultThreshold="DEBUG" onMatch="ACCEPT" onMismatch="NEUTRAL">-->
+<!--		<KeyValuePair key="oop" value="INFO"/>-->
+<!--	</DynamicThresholdFilter>-->
+
+
+	<Appenders>
+
+		<Console name="console" target="SYSTEM_OUT" follow="true" immediateFlush="false">
+			<PatternLayout>
+				<Pattern>${pattern}</Pattern>
+			</PatternLayout>
+		</Console>
+
+		<RollingFile name="rollingFile" fileName="${logDir}${noSuffixLogFileName}.log"
+					 filePattern="${logDir}${noSuffixLogFileName}_%d{yyyy-MM-dd}.log" immediateFlush="false">
+			<PatternLayout>
+				<Pattern>${pattern}</Pattern>
+			</PatternLayout>
+			<Policies>
+				<TimeBasedTriggeringPolicy interval="1"/>
+			</Policies>
+			<DefaultRolloverStrategy>
+				<Delete basePath="${logDir}/">
+					<IfFileName glob="${noSuffixLogFileName}_*.log" />
+					<IfLastModified age="50d" />
+				</Delete>
+			</DefaultRolloverStrategy>
+		</RollingFile>
+	</Appenders>
+
+
+	<Loggers>
+		<Logger name="com" level="WARN">
+			<AppenderRef ref="rollingFile" />
+		</Logger>
+
+		<Root level="debug" >
+			<AppenderRef ref="console" />
+		</Root>
+	</Loggers>
+
+</Configuration>

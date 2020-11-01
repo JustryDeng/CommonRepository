@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Configuration status="OFF" monitorInterval="60">
+
+	<Properties>
+		<Property name="pattern">%d{yyyy-MM-dd HH:mm:ss,SSS} [%thread|%X{requestId}]  %5p %t %c:%L - %msg%n</Property>
+		<Property name="logDir">log/</Property>
+		<Property name="noSuffixLogFileName">log</Property>
+	</Properties>
+
+	<Appenders>
+
+		<Console name="console" target="SYSTEM_OUT" follow="true" immediateFlush="false">
+			<PatternLayout>
+				<Pattern>${pattern}</Pattern>
+			</PatternLayout>
+		</Console>BurstFilter
+
+		<RollingFile name="rollingFile" fileName="${logDir}${noSuffixLogFileName}.log"
+					 filePattern="${logDir}${noSuffixLogFileName}_%d{yyyy-MM-dd}.log" immediateFlush="false">
+			<PatternLayout>
+				<Pattern>${pattern}</Pattern>
+			</PatternLayout>
+			<Policies>
+				<TimeBasedTriggeringPolicy interval="1"/>
+			</Policies>
+			<DefaultRolloverStrategy>
+				<Delete basePath="${logDir}/">
+					<IfFileName glob="${noSuffixLogFileName}_*.log" />
+					<IfLastModified age="50d" />
+				</Delete>
+			</DefaultRolloverStrategy>
+		</RollingFile>
+	</Appenders>
+
+
+	<Loggers>
+		<Logger name="com" level="debug">
+			<AppenderRef ref="rollingFile" />
+		</Logger>
+
+		<Root level="debug" >
+			<AppenderRef ref="console" />
+		</Root>
+	</Loggers>
+
+</Configuration>
