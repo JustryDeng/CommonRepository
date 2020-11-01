@@ -31,5 +31,17 @@ public class DynamicThresholdFilterMain {
         log.info("[test3] i am info");
         log.warn("[test3] i am warn");
         log.error("[test3] i am error");
+
+        ThreadContext.put("userRole", "abc");
+        log.debug("[test4] i am debug");
+        log.info("[test4] i am info");
+        log.warn("[test4] i am warn");
+        log.error("[test4] i am error");
+
+        ThreadContext.put("non", "non");
+        log.debug("[test5] i am debug");
+        log.info("[test5] i am info");
+        log.warn("[test5] i am warn");
+        log.error("[test5] i am error");
     }
 }
