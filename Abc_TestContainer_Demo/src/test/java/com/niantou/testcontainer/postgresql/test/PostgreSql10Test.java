@@ -1,7 +1,7 @@
 package com.niantou.testcontainer.postgresql.test;
 
 import com.niantou.testcontainer.author.JustryDeng;
-import com.niantou.testcontainer.mysql.Mysql5_7EnvSupport;
+import com.niantou.testcontainer.postgresql.PostgreSql10EnvSupport;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
@@ -20,7 +20,7 @@ import java.util.Map;
  */
 @Slf4j
 @SpringBootTest
-public class PostgreSql10Test extends Mysql5_7EnvSupport {
+public class PostgreSql10Test extends PostgreSql10EnvSupport {
     
     @Resource
     TestMapper testMapper;

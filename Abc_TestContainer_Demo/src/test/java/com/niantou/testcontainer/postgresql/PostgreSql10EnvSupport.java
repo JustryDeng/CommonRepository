@@ -50,15 +50,7 @@ public class PostgreSql10EnvSupport implements PostgreSqlEnvSupport {
             // start
             pgSqlContainer.start();
             
-            String jdbcUrl = pgSqlContainer.getJdbcUrl();
-            int endIndex = jdbcUrl.indexOf("?");
-            String additionalSetting = "?characterEncoding=utf8&serverTimezone=GMT%2B8&useSSL=false";
-            if (endIndex < 0) {
-                jdbcUrl = jdbcUrl + additionalSetting;
-            } else {
-                jdbcUrl = jdbcUrl.substring(0, endIndex) + additionalSetting;
-            }
-            System.setProperty("spring.datasource.url", jdbcUrl);
+            System.setProperty("spring.datasource.url", pgSqlContainer.getJdbcUrl());
             System.setProperty("spring.datasource.username", pgSqlContainer.getUsername());
             System.setProperty("spring.datasource.password", pgSqlContainer.getPassword());
             System.setProperty("spring.datasource.driver-class-name", pgSqlContainer.getDriverClassName());

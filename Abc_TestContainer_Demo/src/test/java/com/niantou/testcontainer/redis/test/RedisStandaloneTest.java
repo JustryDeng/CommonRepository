@@ -28,15 +28,18 @@ public class RedisStandaloneTest extends RedisStandaloneEnvSupport {
     @Test
     void one() throws InterruptedException {
         String name = stringRedisTemplate.opsForValue().get("name");
+        System.err.println(name);
         Assert.assertNull(name);
         
         String justryDeng = "JustryDeng";
         stringRedisTemplate.opsForValue().set("name", justryDeng, Duration.ofSeconds(3));
         name = stringRedisTemplate.opsForValue().get("name");
+        System.err.println(name);
         Assert.assertEquals(justryDeng, name);
         
         TimeUnit.SECONDS.sleep(3);
         name = stringRedisTemplate.opsForValue().get("name");
+        System.err.println(name);
         Assert.assertNull(name);
     }
 
