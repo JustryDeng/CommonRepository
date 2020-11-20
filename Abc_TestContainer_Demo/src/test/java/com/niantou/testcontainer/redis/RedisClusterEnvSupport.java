@@ -27,7 +27,11 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 public class RedisClusterEnvSupport implements RedisEnvSupport {
     
     
-    /** 标准的docker镜像(即${镜像名}:${tag名}) */
+    /** 
+     * 标准的docker镜像(即${镜像名}:${tag名})
+     * <p>
+     * 提示: image&tag可去https://hub.docker.com/u/library搜索
+     */
     private static final String DOCKER_IMAGE_NAME = "grokzen/redis-cluster:6.0.7";
     
     /**

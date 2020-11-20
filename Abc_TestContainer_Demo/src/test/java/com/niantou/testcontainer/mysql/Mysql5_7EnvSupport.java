@@ -24,7 +24,11 @@ import org.testcontainers.utility.DockerImageName;
 @Import(value = {ExcludedAllAutoConfiguration.class, DataSourceAutoConfiguration.class})
 public class Mysql5_7EnvSupport implements MysqlEnvSupport{
     
-    /** 标准的docker镜像(即${镜像名}:${tag名}) */
+    /** 
+     * 标准的docker镜像(即${镜像名}:${tag名})
+     * <p>
+     * 提示: image&tag可去https://hub.docker.com/u/library搜索
+     */
     private static final String DOCKER_IMAGE_NAME = "mysql:5.7.32";
     
     /** 数据库 */
