@@ -15,7 +15,7 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 /**
- * redis集群环境支持
+ * redis集群环境支持  for  lettuce
  *
  * @author {@link JustryDeng}
  * @since 2020/11/13 16:14:18
@@ -27,7 +27,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 public class RedisClusterEnvSupport implements RedisEnvSupport {
     
     
-    /** 
+    /**
      * 标准的docker镜像(即${镜像名}:${tag名})
      * <p>
      * 提示: image&tag可去https://hub.docker.com/u/library搜索

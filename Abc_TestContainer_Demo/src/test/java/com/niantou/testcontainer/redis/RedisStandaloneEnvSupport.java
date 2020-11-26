@@ -2,7 +2,6 @@ package com.niantou.testcontainer.redis;
 
 import com.niantou.testcontainer.ExcludedAllAutoConfiguration;
 import com.niantou.testcontainer.author.JustryDeng;
-import com.niantou.testcontainer.redis.test.RedisStandaloneTest;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Assert;
 import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
@@ -24,7 +23,7 @@ import org.testcontainers.utility.DockerImageName;
 @Slf4j
 @Testcontainers
 @Import(value = {ExcludedAllAutoConfiguration.class, RedisAutoConfiguration.class})
-@ContextConfiguration(initializers = RedisStandaloneTest.Initializer.class)
+@ContextConfiguration(initializers = RedisStandaloneEnvSupport.Initializer.class)
 public class RedisStandaloneEnvSupport implements RedisEnvSupport {
     
     /** 
