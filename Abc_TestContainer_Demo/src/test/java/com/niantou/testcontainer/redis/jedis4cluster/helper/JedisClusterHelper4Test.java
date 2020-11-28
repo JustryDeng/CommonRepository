@@ -39,7 +39,7 @@
 //        INTERNAL_POOL = getField(Pool.class, "internalPool");
 //        FACTORY =getField(GenericObjectPool.class, "factory");
 //        try {
-//            HOST_AND_PORT =getField(ClassLoader.getSystemClassLoader().loadClass("redis.clients.jedis4cluster.JedisFactory"), "hostAndPort");
+//            HOST_AND_PORT =getField(ClassLoader.getSystemClassLoader().loadClass("redis.clients.jedis.JedisFactory"), "hostAndPort");
 //        } catch (ClassNotFoundException e) {
 //           throw new RuntimeException(e);
 //        }
