@@ -249,7 +249,7 @@ public final class RedisPipelineUtil implements ApplicationContextAware {
      * @author {@link JustryDeng}
      * @since 2020/11/27 16:29:59
      */
-    public static class JedisClusterPipeline {
+    static class JedisClusterPipeline {
         
         private final JedisClusterConnectionHandler connectionHandler;
         
@@ -293,7 +293,7 @@ public final class RedisPipelineUtil implements ApplicationContextAware {
          *            key对应的slot槽点变化时抛出
          * @return  结果集
          */
-        public <P extends PipelineParamSupplier<T>, T, R> List<R> pipeline(BiFunction<Pipeline, PipelineParamSupplier<T>, Response<R>> biFunction,
+        <P extends PipelineParamSupplier<T>, T, R> List<R> pipeline(BiFunction<Pipeline, PipelineParamSupplier<T>, Response<R>> biFunction,
                                                                            List<P> paramList) throws JedisMovedDataException {
             // 从paramList中抽取到对应的redis-key集合
             Map<byte[], P> redisKeyParamMap = paramList.stream().collect(Collectors.toMap(P::getRedisKey, Function.identity()));
