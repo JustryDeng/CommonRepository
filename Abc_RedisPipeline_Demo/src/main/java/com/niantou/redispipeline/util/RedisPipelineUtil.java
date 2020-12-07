@@ -41,7 +41,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
- * redis pipeline 工具类
+ * redis pipeline 工具类RedisTemplate
  *
  * @author {@link JustryDeng}
  * @since 2020/11/13 2:41:40
@@ -156,8 +156,7 @@ public final class RedisPipelineUtil implements ApplicationContextAware {
     /**
      * @see RedisPipelineUtil#pipeline4Cluster(JedisCluster, BiFunction, List)
      */
-    @SuppressWarnings("rawtypes")
-    public static <R> List<R>  pipeline4ClusterSimpleStr(@NonNull RedisTemplate redisTemplate,
+    public static <R> List<R>  pipeline4ClusterSimpleStr(@NonNull RedisTemplate<?, ?> redisTemplate,
                                                          BiFunction<Pipeline, PipelineParamSupplier<String>,
                                                          Response<R>> biFunction, List<String> paramList)
                                                          throws JedisMovedDataException {
@@ -197,8 +196,7 @@ public final class RedisPipelineUtil implements ApplicationContextAware {
     /**
      * @see RedisPipelineUtil#pipeline4Cluster(JedisCluster, BiFunction, List)
      */
-    @SuppressWarnings("rawtypes")
-    public static <P extends PipelineParamSupplier<T>, T, R> List<R> pipeline4Cluster(@NonNull RedisTemplate redisTemplate,
+    public static <P extends PipelineParamSupplier<T>, T, R> List<R> pipeline4Cluster(@NonNull RedisTemplate<?, ?> redisTemplate,
                                                                                       BiFunction<Pipeline, PipelineParamSupplier<T>, Response<R>> biFunction,
                                                                                       List<P> paramList)
                                                                                       throws JedisMovedDataException {
