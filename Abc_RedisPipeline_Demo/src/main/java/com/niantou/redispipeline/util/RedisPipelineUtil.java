@@ -4,6 +4,7 @@ import com.niantou.redispipeline.author.JustryDeng;
 import lombok.extern.slf4j.Slf4j;
 import net.jcip.annotations.ThreadSafe;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.data.redis.connection.RedisClusterConnection;
@@ -51,7 +52,7 @@ import java.util.stream.Collectors;
 @SuppressWarnings("unused")
 public final class RedisPipelineUtil implements ApplicationContextAware {
     
-    private static RedisTemplate<Object, Object> defaultRedisTemplate;
+    private static RedisTemplate<?, ?> defaultRedisTemplate;
 
     /**
      * 获取key序列化器
@@ -229,13 +230,21 @@ public final class RedisPipelineUtil implements ApplicationContextAware {
     @Override
     @SuppressWarnings("rawtypes")
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        // 初始化
-        Map<String, RedisTemplate> beansOfType = applicationContext.getBeansOfType(RedisTemplate.class);
-        Map.Entry<String, RedisTemplate> redisTemplateEntry = beansOfType.entrySet().stream()
-                .findFirst().orElseThrow(() -> new IllegalArgumentException(" cannot find any RedisTemplate"));
-        //noinspection unchecked
-        RedisPipelineUtil.defaultRedisTemplate = redisTemplateEntry.getValue();
-        log.info(" use [{}] as the default RedisPipelineUtil's RedisTemplate", redisTemplateEntry.getKey());
+        ObjectProvider<PipelineDefaultRedisTemplateProvider> defaultRedisTemplateProvider = applicationContext.getBeanProvider(PipelineDefaultRedisTemplateProvider.class);
+        PipelineDefaultRedisTemplateProvider provider = defaultRedisTemplateProvider.getIfAvailable();
+        if (provider != null) {
+            RedisTemplate<?, ?> obtainedRedisTemplate = provider.obtainDefaultRedisTemplate();
+            RedisPipelineUtil.defaultRedisTemplate = obtainedRedisTemplate;
+            log.info(" use [{}] as the default RedisPipelineUtil's RedisTemplate", obtainedRedisTemplate);
+        } else {
+            // 初始化
+            Map<String, RedisTemplate> beansOfType = applicationContext.getBeansOfType(RedisTemplate.class);
+            Map.Entry<String, RedisTemplate> redisTemplateEntry = beansOfType.entrySet().stream()
+                    .findFirst().orElseThrow(() -> new IllegalArgumentException(" cannot find any RedisTemplate"));
+            //noinspection
+            RedisPipelineUtil.defaultRedisTemplate = redisTemplateEntry.getValue();
+            log.info(" use [{}] as the default RedisPipelineUtil's RedisTemplate", redisTemplateEntry.getKey());
+        }
     }
     
     /**
@@ -358,6 +367,25 @@ public final class RedisPipelineUtil implements ApplicationContextAware {
                 }
             }
         }
+    }
+    
+    /**
+     * 可指定{@link RedisPipelineUtil#defaultRedisTemplate}
+     * <p>
+     * 将会优先使用容器中被RedisTemplate4Pipeline标识了的RedisTemplate作为{@link RedisPipelineUtil#defaultRedisTemplate}，
+     * 如果没有，则以容器中第一个RedisTemplate作为{@link RedisPipelineUtil#defaultRedisTemplate}
+     *
+     * @author {@link JustryDeng}
+     * @since 2020/12/7 12:40:04
+     */
+    public interface PipelineDefaultRedisTemplateProvider {
+        
+        /**
+         * 指定{@link RedisPipelineUtil#defaultRedisTemplate}
+         *
+         * @return  要设置的{@link RedisPipelineUtil#defaultRedisTemplate}
+         */
+        RedisTemplate<?, ?> obtainDefaultRedisTemplate();
     }
     
     /**
