@@ -41,18 +41,18 @@ public class GlobalExceptionHandler {
         Map<String, Object> resultMap = new HashMap<>(4);
         resultMap.put("code", "100001");
         String msg = null;
-        /// BindException
-        if (e instanceof BindException) {
-            // getFieldError获取的是第一个不合法的参数(P.S.如果有多个参数不合法的话)
-            FieldError fieldError = ((BindException) e).getFieldError();
-            if (fieldError != null) {
-                msg = fieldError.getDefaultMessage();
-            }
         /// MethodArgumentNotValidException
-        } else if (e instanceof MethodArgumentNotValidException) {
+        if (e instanceof MethodArgumentNotValidException) {
             BindingResult bindingResult = ((MethodArgumentNotValidException) e).getBindingResult();
             // getFieldError获取的是第一个不合法的参数(P.S.如果有多个参数不合法的话)
             FieldError fieldError = bindingResult.getFieldError();
+            if (fieldError != null) {
+                msg = fieldError.getDefaultMessage();
+            }
+        /// BindException
+        } else if (e instanceof BindException) {
+            // getFieldError获取的是第一个不合法的参数(P.S.如果有多个参数不合法的话)
+            FieldError fieldError = ((BindException) e).getFieldError();
             if (fieldError != null) {
                 msg = fieldError.getDefaultMessage();
             }
@@ -77,21 +77,5 @@ public class GlobalExceptionHandler {
         resultMap.put("msg", msg);
         return resultMap;
     }
-
-    /**
-     * 处理Exception异常
-     *
-     * @param e
-     *         捕获到的异常
-     * @return 返回给前端的data
-     */
-    @ExceptionHandler(value = {Exception.class})
-    @ResponseStatus(code = HttpStatus.INTERNAL_SERVER_ERROR)
-    public Map<String, Object> handleException(Exception e) {
-        log.error(" handleException has been invoked", e);
-        Map<String, Object> resultMap = new HashMap<>(4);
-        resultMap.put("code", "100000");
-        resultMap.put("msg", "系统繁忙，请稍后再试");
-        return resultMap;
-    }
+    
 }
